@@ -1,0 +1,4 @@
+// Signing settings. Your Apple team ID goes in Local.xcconfig, which git
+// ignores, so each person who builds Fledge uses their own team.
+// Copy Local.xcconfig.example to Local.xcconfig and fill in your team ID.
+#include? "Local.xcconfig"
