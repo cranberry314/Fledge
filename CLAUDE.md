@@ -28,8 +28,13 @@ and nothing about who uses the app. Personal context lives in
   other files, and don't add clever code to this one.
 - `ios/Signing.xcconfig` includes the gitignored `ios/Local.xcconfig`, which
   holds `DEVELOPMENT_TEAM`. Signing is Automatic.
-- `firmware/`: ESP32 code. Not written yet; language still undecided
-  (Arduino C++ or MicroPython). Ask before choosing.
+- `firmware/`: the ESP32 relay, in Arduino C++. Not written yet. It only
+  relays: bytes in over BLE, drone packets out over the nRF24. Settings
+  that change how the drone flies (sensitivity, speed) belong in
+  `Tuning.swift` on the phone, not here.
+- A separate ESP32 running MicroPython is a beginner playground (LEDs,
+  buzzer), not part of the relay. Keep it out of `firmware/`. Where its
+  code lives is undecided; ask first.
 
 ## Code style
 
