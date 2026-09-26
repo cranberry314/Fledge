@@ -17,3 +17,7 @@ ios/Local.xcconfig
 *.cer
 *.certSigningRequest
 .env
+
+# Personal context for Claude (never public)
+CLAUDE.local.md
+.claude/settings.local.json
