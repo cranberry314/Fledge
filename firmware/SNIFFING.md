@@ -22,6 +22,22 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   may explain why a short push gives "a little" and a long push "a lot".
   The hold test checks whether the remote's numbers change while a stick
   is held, or only the drone's response does.
+- **The remote's radio is an XN297, or a copy of one, at 1 Mbps.** The
+  nRF24 can read it. `Sniffer/` listened on channels 16-17 in every way
+  it knows. With the remote off, nothing but noise. With the remote on
+  (drone off), about 24 packets a second arrived on each channel, every
+  one byte-for-byte the same, and only when listening for the XN297
+  start pattern at 1 Mbps.
+- **The pairing packet, decoded.** 24 bytes after the XN297 start
+  pattern: a 5-byte address, a 16-byte payload, a 2-byte checksum, then
+  one more byte that is always the same (not explained yet). Unscrambled
+  with the XN297 scramble table, the address is `CC CC CC CC CC`, and the
+  checksum matches (XN297 CRC-16, start value 0xB5D2, scrambled-mode
+  xorout table), so the decoding is exact. The payload is `10`, then 5
+  bytes that are probably this remote's own ID, then ten `00`s.
+- **Not a protocol Multiprotocol already knows.** Its only protocol that
+  pairs on `CC CC CC CC CC` is MT99xx, whose pairing payload is 9 bytes
+  starting with `20`. So this one gets decoded here, step by step.
 - The manual is shared by several models (it mentions "WIFI control",
   which this drone has no hardware for) and has no FCC ID. If no sticker
   turns up (remote battery cover, drone battery bay, box), open the remote
@@ -79,8 +95,9 @@ returns to it.
    the motors once paired.
 2. Drone battery charged, 3 fresh AAAs in the remote.
 3. RadioCheck passes (`SETUP.md` step 4).
-4. The sniffer recording (not written yet), started before the coach, so
-   every step's packets are captured. Both use the Mac's clock.
+4. The sniffer recording, started before the coach, so every step's
+   packets are captured. Both use the Mac's clock. (The sniffer can't
+   follow the remote once it pairs yet: see the next steps in the notes.)
 
 The motors will probably spin during some steps (left stick forward,
 button 5). With props off that is expected: carry on. Button 7, pressed
