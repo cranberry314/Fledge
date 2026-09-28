@@ -16,15 +16,18 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   channels 16-17 (2416-2417 MHz) and keeps doing so. Once paired, the
   energy scan can no longer see it.
 - **The left stick springs back to the middle** in both directions
-  (check this on the real remote). Let go of it and the drone holds its
+  (checked on the real remote). Let go of it and the drone holds its
   height ("Hover" in the manual). So the left stick sets how fast to
   climb or sink, and holding it longer makes the drone go higher. That
   may explain why a short push gives "a little" and a long push "a lot".
   Test 13 checks whether the remote's numbers change while a stick is
   held, or only the drone's response does.
 - The manual is shared by several models (it mentions "WIFI control",
-  which this drone has no hardware for) and has no FCC ID. The FCC ID has
-  to come from a sticker on the drone, the remote or the box.
+  which this drone has no hardware for) and has no FCC ID. If no sticker
+  turns up (remote battery cover, drone battery bay, box), open the remote
+  and photograph the chip next to its antenna: its part number says which
+  radio family it is. The sniffer's first run answers the same question:
+  if it reads packets at all, the chip is nRF24-compatible.
 
 ## Names
 
@@ -63,10 +66,8 @@ the real remote and fix this table if it differs.
 **Trims** ("fine-tuning"): the manual says to long-press button 5 "and
 then" push the right stick in the direction to correct. It doesn't say
 whether button 5 stays held while pushing, or whether a long press enters
-a trim mode (and if so, how to leave it). Find out on the bench, with
-props off, before the first session, and write the answer here. Count
-each push as one click. Whether trims are sent as their own numbers or
-added to the stick numbers is one of the things to find out (test 19).
+a trim mode. Test 19 tries both, and the packets say which one works.
+Count each push as one click.
 
 **Rest** means: both sticks neutral, hands off the buttons, trims
 untouched, speed as the remote starts up. Every test starts from rest and
@@ -139,7 +140,9 @@ noted as they happen)
 | 16 | Button 1, press once. Then press again until it is back where it started, counting presses and beeps: that is the number of speeds. |
 | 17 | Button 6, press once. Then button 6, hold 3 s. Then put the lights back as they were. |
 | 18 | Button 2, press once, then right stick full forward (the flip command; on the bench the drone will not flip). |
-| 19 | Trim, using the method found on the bench: right stick full right, 3 clicks. Then undo it: right stick full left, 3 clicks. |
+| 19a | Trim, try 1: hold button 5 down, and while holding it, right stick full right 3 times. Let go of button 5. Note any beeps. |
+| 19b | Trim, try 2: hold button 5 for 3 s and let go. Then right stick full right 3 times. Note any beeps. |
+| 19c | Undo whichever try changed a byte: the same method, right stick full left, until that byte is back to its rest value. |
 | 20 | Button 7, hold 3 s (level calibration). Drone must sit level. |
 | 21 | Button 5, press once (take off: motors spin, props off). |
 | 22 | Button 7, press once (emergency stop: motors stop). |
