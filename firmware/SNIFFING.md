@@ -145,11 +145,15 @@ Run it in a terminal, in `firmware/coach/`:
 Before step 1 it listens for 5 seconds and says whether it can hear the
 remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
 hear each line read aloud too, `--quick` to go at your own pace (each
-step waits for Enter, no countdown), or `--no-sniffer` to run the
-countdown alone. The step lists start by switching on the drone and the
-remote and pairing them, so start with both off. Press **r** if a step
-went wrong, or showed ❌: it is marked bad in the log and done again.
-Press **q** to stop.
+step waits for Enter, no countdown), `--no-sniffer` to run the
+countdown alone, or `--pseudo` for a practice run: the same prompts, no
+checks, a 👍 after every step, and logs named `...-pseudo` so they are
+never mistaken for real data.
+
+The step lists start by switching on the drone and the remote and
+pairing them, so start with both off. Press **r** if a step went wrong,
+or showed ❌: it is marked bad in the log and done again. Press **q** to
+stop.
 
 "Changed" means what the remote mostly sent during the step differs from
 the 2 seconds before Go!, or something new arrived at least 3 times (a

@@ -8,6 +8,7 @@ after each step says whether the remote's signal changed.
     python3 coach.py controls.txt --quick       # wait for Enter, no countdown
     python3 coach.py controls.txt --say         # also read each step aloud
     python3 coach.py controls.txt --no-sniffer  # just the countdown
+    python3 coach.py controls.txt --pseudo      # a practice run: no checks
 
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again
@@ -15,7 +16,9 @@ Keys while it runs:
     Enter   with --quick: start the step shown
 
 The steps are in the .txt files: one step per line, the number of seconds
-first, then what to do. Steps starting with "Rest" or "Switch" aren't
+first, then what to do. With --pseudo every step ends with a thumbs up,
+nothing is checked, and the logs are named ...-pseudo so they are never
+mistaken for real data. Steps starting with "Rest" or "Switch" aren't
 checked for a change. Two logs go in firmware/captures/: the steps
 (.csv) and everything the sniffer printed (-sniffer.log).
 """
@@ -205,7 +208,9 @@ def run_step(seconds, text):
         return start, end, key, ""
 
     changed = ""
-    if LINK:
+    if PSEUDO:
+        say("👍 Well done!")
+    elif LINK:
         changed = check_step(kind, ready_from, hold_from, hold_to)
     if kind == "step":
         say("Let go ✋")
@@ -244,6 +249,18 @@ def connect_sniffer(sniffer_log_path):
     return True
 
 
+def record_quietly(sniffer_log_path):
+    """For --pseudo: record the sniffer if it's there, and say nothing."""
+    global LINK
+    port = find_port()
+    if port is None:
+        return
+    try:
+        LINK = SnifferLink(port, sniffer_log_path)
+    except OSError:
+        LINK = None
+
+
 def main():
     steps_file = sys.argv[1]
     steps = read_steps(steps_file)
@@ -253,12 +270,16 @@ def main():
     captures = os.path.normpath(os.path.join(here, "..", "captures"))
     os.makedirs(captures, exist_ok=True)
     name = os.path.splitext(os.path.basename(steps_file))[0]
+    if PSEUDO:
+        name += "-pseudo"
     started = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
     log_path = os.path.join(captures, f"{started}-{name}.csv")
     sniffer_log_path = os.path.join(captures, f"{started}-{name}-sniffer.log")
 
     print(f"{len(steps)} steps from {steps_file}")
-    if USE_SNIFFER and not connect_sniffer(sniffer_log_path):
+    if PSEUDO:
+        record_quietly(sniffer_log_path)
+    elif USE_SNIFFER and not connect_sniffer(sniffer_log_path):
         return
     log_file = open(log_path, "w", newline="", encoding="utf-8")
     log = csv.writer(log_file)
@@ -302,6 +323,7 @@ def main():
 
 SPEAK = "--say" in sys.argv
 USE_SNIFFER = "--no-sniffer" not in sys.argv
+PSEUDO = "--pseudo" in sys.argv
 if "--quick" in sys.argv:
     WAIT_FOR_ENTER = True
     REST_SECONDS = 1
