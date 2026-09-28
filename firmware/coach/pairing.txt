@@ -1,11 +1,11 @@
 # Pairing steps for coach.py. See firmware/SNIFFING.md.
-# Each line: how many seconds, then what to do.
+# Each line: what to do. You get 15 seconds for each (see coach.py).
 # Before starting: props off, remote off, drone off.
 
-8 Rest: remote off, drone off, hands off
-30 Switch the remote on with the power switch. Hands off the sticks
-5 Switch the remote off with the power switch
-15 Switch the drone on. Its light blinks slowly
-8 Switch the remote on with the power switch
-8 Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
-30 Rest: hands off. Both lights should stay on
+Rest: remote off, drone off, hands off
+Switch the remote on with the power switch. Hands off the sticks
+Switch the remote off with the power switch
+Switch the drone on. Its light blinks slowly
+Switch the remote on with the power switch
+Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
+Rest: hands off. Both lights should stay on

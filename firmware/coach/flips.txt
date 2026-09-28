@@ -1,27 +1,27 @@
 # Flip steps only, for coach.py. See firmware/SNIFFING.md.
-# Each line: how many seconds, then what to do.
+# Each line: what to do. You get 15 seconds for each (see coach.py).
 # Before starting: props off, remote off, drone off.
 # A flip: press the top-right button (the remote beeps), then push the
 # right stick in the direction to flip. On the bench the drone won't flip.
 
 # Switch on and pair.
-8 Switch the drone on. Its light blinks slowly
-8 Switch the remote on with the power switch
-8 Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
-8 Rest: hands off. Both lights should stay on
+Switch the drone on. Its light blinks slowly
+Switch the remote on with the power switch
+Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
+Rest: hands off. Both lights should stay on
 
-8 Rest: hands off everything
+Rest: hands off everything
 
 # For comparison: the same push without the top-right button.
-5 Right stick ⬆️ full forward, then let go
+Right stick ⬆️ full forward, then let go
 
 # One flip in each direction.
-5 Top-right button 🤸: press once (it beeps), then right stick ⬆️ full forward, then let go
-5 Top-right button 🤸: press once (it beeps), then right stick ➡️ full right, then let go
-5 Top-right button 🤸: press once (it beeps), then right stick ⬇️ full back, then let go
-5 Top-right button 🤸: press once (it beeps), then right stick ⬅️ full left, then let go
+Top-right button 🤸: press once (it beeps), then right stick ⬆️ full forward, then let go
+Top-right button 🤸: press once (it beeps), then right stick ➡️ full right, then let go
+Top-right button 🤸: press once (it beeps), then right stick ⬇️ full back, then let go
+Top-right button 🤸: press once (it beeps), then right stick ⬅️ full left, then let go
 
 # The button alone: does anything change if the stick never moves?
-8 Top-right button 🤸: press once (it beeps), and don't touch the sticks
+Top-right button 🤸: press once (it beeps), and don't touch the sticks
 
-8 Rest: hands off everything
+Rest: hands off everything

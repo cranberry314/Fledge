@@ -1,22 +1,22 @@
 # Stick sweeps only, for coach.py. See firmware/SNIFFING.md.
-# Each line: how many seconds, then what to do.
+# Each line: what to do. You get 15 seconds for each (see coach.py).
 # Before starting: props off, remote off, drone off.
 
 # Switch on and pair.
-8 Switch the drone on. Its light blinks slowly
-8 Switch the remote on with the power switch
-8 Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
-8 Rest: hands off. Both lights should stay on
+Switch the drone on. Its light blinks slowly
+Switch the remote on with the power switch
+Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
+Rest: hands off. Both lights should stay on
 
-8 Rest: hands off everything
+Rest: hands off everything
 
 # Every stick position, not just a few: slow circles and slow sweeps.
 # Go slowly and steadily; the sniffer records about 30 positions a second.
-8 Right stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
-8 Right stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
-8 Right stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
-8 Left stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
-8 Left stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
-8 Left stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
+Right stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
+Right stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
+Right stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
+Left stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
+Left stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
+Left stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
 
-8 Rest: hands off everything
+Rest: hands off everything

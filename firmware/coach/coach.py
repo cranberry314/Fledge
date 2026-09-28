@@ -5,7 +5,6 @@ countdown. At the same time it records what the Sniffer ESP32 hears, and
 after each step says whether the remote's signal changed.
 
     python3 coach.py controls.txt
-    python3 coach.py controls.txt --quick       # Go! straight after Enter
     python3 coach.py controls.txt --say         # also read each step aloud
     python3 coach.py controls.txt --no-sniffer  # just the countdown
     python3 coach.py controls.txt --pseudo      # a practice run: no checks
@@ -13,14 +12,13 @@ after each step says whether the remote's signal changed.
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again
     q   stop
-    Enter   start the step shown (then a 30 s countdown, or none with
-            --quick)
+    Enter   start the step shown; then you have 15 seconds to do it
 
-The steps are in the .txt files: one step per line, the number of seconds
-first, then what to do. With --pseudo every step ends with a thumbs up,
-nothing is checked, and the logs are named ...-pseudo so they are never
-mistaken for real data. Steps starting with "Rest" or "Switch" aren't
-checked for a change. Two logs go in firmware/captures/: the steps
+The steps are in the .txt files: one step per line, what to do. A line
+can start with a number of seconds if that step needs a different time.
+With --pseudo every step ends with a thumbs up, nothing is checked, and
+the logs are named ...-pseudo so they are never mistaken for real data.
+Steps starting with "Rest" or "Switch" aren't checked for a change. Two logs go in firmware/captures/: the steps
 (.csv) and everything the sniffer printed (-sniffer.log).
 """
 
@@ -37,14 +35,11 @@ import tty
 
 from sniffer_link import SnifferLink, find_port
 
-# Countdown after Enter, before Go!, in seconds (not with --quick).
-GET_READY_SECONDS = 30
+# How long you have to do each step, after Enter, in seconds.
+STEP_SECONDS = 15
 
 # Countdown after letting go, before the next step, in seconds.
 REST_SECONDS = 3
-
-# With --quick: no countdown after Enter; Go! straight away.
-COUNTDOWN = True
 
 # How long to listen for the remote before step 1, in seconds.
 CHECK_SECONDS = 5
@@ -58,14 +53,18 @@ LINK = None
 
 
 def read_steps(path):
-    """Read the steps file: '<seconds> <what to do>' on each line."""
+    """Read the steps file: one step per line, optionally starting with
+    its own number of seconds."""
     steps = []
     for line in open(path, encoding="utf-8"):
         line = line.strip()
         if line == "" or line.startswith("#"):
             continue
-        seconds, text = line.split(maxsplit=1)
-        steps.append((int(seconds), text))
+        first, _, rest = line.partition(" ")
+        if first.isdigit():
+            steps.append((int(first), rest.strip()))
+        else:
+            steps.append((STEP_SECONDS, line))
     return steps
 
 
@@ -192,11 +191,6 @@ def run_step(seconds, text):
     key = wait_for_enter()
     if key:
         return None, None, key, ""
-    if COUNTDOWN and kind != "rest":
-        say("Get ready:")
-        key = count_down(GET_READY_SECONDS)
-        if key:
-            return None, None, key, ""
     say("Go!")
 
     hold_from = time.monotonic()
@@ -324,9 +318,6 @@ def main():
 SPEAK = "--say" in sys.argv
 USE_SNIFFER = "--no-sniffer" not in sys.argv
 PSEUDO = "--pseudo" in sys.argv
-if "--quick" in sys.argv:
-    COUNTDOWN = False
-    REST_SECONDS = 1
 sys.argv = [a for a in sys.argv if not a.startswith("--")]
 if len(sys.argv) != 2:
     print(__doc__)

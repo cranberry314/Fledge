@@ -125,32 +125,32 @@ small round button, pressed once, stops them at any time.
 
 ## Running a session
 
-`coach/coach.py` shows each step, waits for Enter, and counts you
-through it, like this. At the same time it records everything the
-sniffer hears, and after each step it says whether the remote's signal
-changed:
+`coach/coach.py` shows each step and waits for Enter. Then you have 15
+seconds to do it, counted down. At the same time it records everything
+the sniffer hears, and after each step it says whether the remote's
+signal changed:
 
-    Right stick ⬆️ full forward  ⏱ 5 seconds
+    Right stick ⬆️ full forward  ⏱ 15 seconds
     Press Enter to start.
-    Get ready: 30 29 ... 1 (one per line; none with --quick)
     Go!
-    5 4 3 2 1
+    15 14 ... 1 (one per line)
     ✅ The remote's signal changed      (or ❌ No change seen)
     Let go ✋
     3 2 1
 
-Run it in a terminal, in `firmware/coach/`:
+Run it in a terminal, in `firmware/coach/`, with one of the step lists:
 
-    python3 coach.py pairing.txt      # first, about 2.5 minutes
-    python3 coach.py controls.txt     # then, about 7 minutes
+    python3 coach.py controls.txt     # everything, 38 steps
+    python3 coach.py sticks.txt       # stick circles and sweeps
+    python3 coach.py buttons.txt      # the buttons
+    python3 coach.py flips.txt        # a flip in each direction
 
 Before step 1 it listens for 5 seconds and says whether it can hear the
 remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
-hear each line read aloud too, `--quick` to go straight to Go! after
-Enter (otherwise there's a 30-second countdown), `--no-sniffer` to run the
-countdown alone, or `--pseudo` for a practice run: the same prompts, no
-checks, a 👍 after every step, and logs named `...-pseudo` so they are
-never mistaken for real data.
+hear each line read aloud too, `--no-sniffer` to run the countdown
+alone, or `--pseudo` for a practice run: the same prompts, no checks, a
+👍 after every step, and logs named `...-pseudo` so they are never
+mistaken for real data.
 
 The step lists start by switching on the drone and the remote and
 pairing them, so start with both off. Press **r** if a step went wrong,
@@ -167,16 +167,14 @@ Two logs go in `firmware/captures/`, which git ignores: the steps (.csv,
 with a remote_changed column) and everything the sniffer printed
 (-sniffer.log), both timed by the Mac's clock.
 
-The steps are in `pairing.txt` and `controls.txt`: one per line, the
-number of seconds, then what to do. Change them there, not here.
-
-**Pairing first**, on its own, starting with the remote and drone off:
-the pairing packets probably carry the remote's ID and maybe its list of
-channels. `controls.txt` starts where it ends, with the two paired.
+The steps are in the `.txt` files in `coach/`: one per line, what to
+do. A line can start with a number of seconds if that step needs a
+different time. Change them there, not here. (`pairing.txt` records
+pairing on its own; the other lists include switching on and pairing.)
 
 **Then the controls**, in this order:
 
-- **Rest, 8 s**: the baseline. A number that changes when nobody
+- **Rest**: the baseline. A number that changes when nobody
   touches anything is probably a counter or checksum, not a control.
 - **Each stick direction, full**: which number moves, and its two ends.
 - **Half** (to a pencil mark): if full, half and neutral fall on a
@@ -186,7 +184,7 @@ channels. `controls.txt` starts where it ends, with the two paired.
   at every angle) and slow sweeps forward to back and left to right
   (every value in between). About 30 positions a second get recorded.
   `sticks.txt` runs just these.
-- **Hold 8 s, and a quick tap**: does the remote's number grow while a
+- **Hold, and a quick tap**: does the remote's number grow while a
   stick is held (the remote ramps), or stay the same (the drone ramps)?
 - **Buttons**, one at a time, then **trims** (both ways the manual might
   mean, each undone afterwards).
