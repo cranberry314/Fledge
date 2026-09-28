@@ -166,7 +166,7 @@ channels. `controls.txt` starts where it ends, with the two paired.
 
 **Then the controls**, in this order:
 
-- **Rest, 10 s**: the baseline. A number that changes when nobody
+- **Rest, 8 s**: the baseline. A number that changes when nobody
   touches anything is probably a counter or checksum, not a control.
 - **Each stick direction, full**: which number moves, and its two ends.
 - **Half** (to a pencil mark): if full, half and neutral fall on a
@@ -174,7 +174,7 @@ channels. `controls.txt` starts where it ends, with the two paired.
 - **Diagonal**, right stick into the corner: if the packet shows the
   full-forward number and the full-right number together, forward and
   right are two separate numbers, and any angle is just a mix of the two.
-- **Hold 10 s, and a quick tap**: does the remote's number grow while a
+- **Hold 8 s, and a quick tap**: does the remote's number grow while a
   stick is held (the remote ramps), or stay the same (the drone ramps)?
 - **Buttons**, one at a time, then **trims** (both ways the manual might
   mean, each undone afterwards).
