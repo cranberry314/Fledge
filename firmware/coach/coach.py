@@ -130,8 +130,9 @@ def remote_changed(before, during):
     """Did the remote send something different during the step?
     Yes if what it mostly sent during the step is not what it mostly sent
     in the countdown before it, or if something new arrived at least 3
-    times (a quick button press). Only packets with a good checksum get
-    this far (see sniffer_link.py)."""
+    times (a quick button press), or if at least 30% of the step's
+    packets are new (a slow sweep, where no one position repeats). Only
+    packets with a good checksum get this far (see sniffer_link.py)."""
     before = [control_bytes(p) for p in before]
     during = [control_bytes(p) for p in during]
     if not before:
@@ -142,6 +143,8 @@ def remote_changed(before, during):
         return True
     seen_before = set(before)
     new = collections.Counter(p for p in during if p not in seen_before)
+    if sum(new.values()) >= 0.3 * len(during):
+        return True
     return any(count >= 3 for count in new.values())
 
 
@@ -184,16 +187,17 @@ def run_step(seconds, text):
 
     ready_from = time.monotonic()
     if WAIT_FOR_ENTER:
-        say(f"{text}, for {seconds} {unit}.")
+        say(f"{text}  ⏱ {seconds} {unit}")
         print("Press Enter to start.", flush=True)
         key = wait_for_enter()
         if key:
             return None, None, key, ""
         say("Go!")
     elif kind == "rest":
-        say(f"{text}, for {seconds} {unit}")
+        say(f"{text}  ⏱ {seconds} {unit}")
     else:
-        say(f"{text}, for {seconds} {unit}, in")
+        say(f"{text}  ⏱ {seconds} {unit}")
+        say("Get ready:")
         key = count_down(GET_READY_SECONDS)
         if key:
             return None, None, key, ""

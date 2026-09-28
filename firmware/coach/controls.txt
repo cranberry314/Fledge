@@ -26,8 +26,14 @@
 3 Right stick ⬆️ half forward, to the pencil mark
 3 Right stick ➡️ half right, to the pencil mark
 
-# Diagonal: are forward and right two separate numbers?
-3 Right stick ↗️ full forward and full right, into the corner
+# Every stick position, not just a few: slow circles and slow sweeps.
+# Go slowly and steadily; the sniffer records about 30 positions a second.
+8 Right stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
+8 Right stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
+8 Right stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
+8 Left stick: push it to the edge at ⬆️, then go slowly round clockwise 🔃, one full circle
+8 Left stick: slowly from centre to ⬆️ full forward, then slowly to ⬇️ full back, then back to centre
+8 Left stick: slowly from centre to ⬅️ full left, then slowly to ➡️ full right, then back to centre
 
 # Timing: does the remote's number grow while a stick is held?
 8 Right stick ⬆️ full forward, and hold it there

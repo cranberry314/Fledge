@@ -179,9 +179,11 @@ channels. `controls.txt` starts where it ends, with the two paired.
 - **Each stick direction, full**: which number moves, and its two ends.
 - **Half** (to a pencil mark): if full, half and neutral fall on a
   straight line, every position in between follows from them.
-- **Diagonal**, right stick into the corner: if the packet shows the
-  full-forward number and the full-right number together, forward and
-  right are two separate numbers, and any angle is just a mix of the two.
+- **Every position, by sweeping**: for each stick, one slow clockwise
+  circle at the edge (the whole outline: round or square, and the values
+  at every angle) and slow sweeps forward to back and left to right
+  (every value in between). About 30 positions a second get recorded.
+  `sticks.txt` runs just these.
 - **Hold 8 s, and a quick tap**: does the remote's number grow while a
   stick is held (the remote ramps), or stay the same (the drone ramps)?
 - **Buttons**, one at a time, then **trims** (both ways the manual might
