@@ -5,16 +5,18 @@ countdown. At the same time it records what the Sniffer ESP32 hears, and
 after each step says whether the remote's signal changed.
 
     python3 coach.py controls.txt
-    python3 coach.py controls.txt --quick       # shorter countdowns
+    python3 coach.py controls.txt --quick       # wait for Enter, no countdown
     python3 coach.py controls.txt --say         # also read each step aloud
     python3 coach.py controls.txt --no-sniffer  # just the countdown
 
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again
     q   stop
+    Enter   with --quick: start the step shown
 
 The steps are in the .txt files: one step per line, the number of seconds
-first, then what to do. Two logs go in firmware/captures/: the steps
+first, then what to do. Steps starting with "Rest" or "Switch" aren't
+checked for a change. Two logs go in firmware/captures/: the steps
 (.csv) and everything the sniffer printed (-sniffer.log).
 """
 
@@ -36,6 +38,9 @@ GET_READY_SECONDS = 5
 
 # Countdown after letting go, before the next step, in seconds.
 REST_SECONDS = 3
+
+# With --quick: no countdown; show each step and wait for Enter.
+WAIT_FOR_ENTER = False
 
 # How long to listen for the remote before step 1, in seconds.
 CHECK_SECONDS = 5
@@ -105,6 +110,19 @@ def control_bytes(packet):
     return packet[7:18]
 
 
+def wait_for_enter():
+    """Wait until Enter is pressed. Returns 'q' if q is pressed instead."""
+    if not KEYS:
+        return None
+    while True:
+        key = key_pressed()
+        if key in ("\n", "\r"):
+            return None
+        if key == "q":
+            return "q"
+        time.sleep(0.02)
+
+
 def remote_changed(before, during):
     """Did the remote send something different during the step?
     Yes if what it mostly sent during the step is not what it mostly sent
@@ -124,18 +142,26 @@ def remote_changed(before, during):
     return any(count >= 3 for count in new.values())
 
 
-def check_step(is_rest, ready_from, hold_from, hold_to):
+def check_step(kind, ready_from, hold_from, hold_to):
     """Say what the sniffer heard during the step. Returns 'yes', 'no' or
     '' for the log's remote_changed column."""
     during = LINK.packets_between(hold_from, hold_to)
-    if len(during) < HEARING_PACKETS:
+    hearing = len(during) >= HEARING_PACKETS
+    if kind == "switch":
+        # Switching things on: nothing to compare with, just report.
+        if hearing:
+            say("📡 Hearing the remote")
+        return ""
+    if not hearing:
         say("⚠️  Not hearing the remote")
         return ""
-    if is_rest:
+    if kind == "rest":
         say("📡 Hearing the remote")
         return ""
-    # Leave out the last moment before Go!: people start early.
-    before = LINK.packets_between(ready_from, hold_from - 0.3)
+    # Compare with the 2 seconds before Go!, leaving out the last moment:
+    # people start early.
+    before = LINK.packets_between(max(ready_from, hold_from - 2),
+                                  hold_from - 0.3)
     if remote_changed(before, during):
         say("✅ The remote's signal changed")
         return "yes"
@@ -146,11 +172,22 @@ def check_step(is_rest, ready_from, hold_from, hold_to):
 def run_step(seconds, text):
     """Do one step. Returns (start time, end time, key pressed or None,
     whether the remote's signal changed)."""
-    is_rest = text.lower().startswith("rest")
+    kind = "step"
+    if text.lower().startswith("rest"):
+        kind = "rest"
+    if text.lower().startswith("switch"):
+        kind = "switch"
     unit = "second" if seconds == 1 else "seconds"
 
     ready_from = time.monotonic()
-    if is_rest:
+    if WAIT_FOR_ENTER:
+        say(f"{text}, for {seconds} {unit}.")
+        print("Press Enter to start.", flush=True)
+        key = wait_for_enter()
+        if key:
+            return None, None, key, ""
+        say("Go!")
+    elif kind == "rest":
         say(f"{text}, for {seconds} {unit}")
     else:
         say(f"{text}, for {seconds} {unit}, in")
@@ -169,8 +206,8 @@ def run_step(seconds, text):
 
     changed = ""
     if LINK:
-        changed = check_step(is_rest, ready_from, hold_from, hold_to)
-    if not is_rest:
+        changed = check_step(kind, ready_from, hold_from, hold_to)
+    if kind == "step":
         say("Let go ✋")
         key = count_down(REST_SECONDS)
     return start, end, key, changed
@@ -201,7 +238,8 @@ def connect_sniffer(sniffer_log_path):
     if heard >= HEARING_PACKETS:
         print(f"📡 Hearing the remote ({heard} packets).")
     else:
-        print(f"⚠️  Not hearing the remote ({heard} packets). Is it on and")
+        print(f"⚠️  Not hearing the remote ({heard} packets). Fine if the")
+        print("   steps start by switching it on. If not: is it on and")
         print("   paired, and is the sniffer on the right channel?")
     return True
 
@@ -265,7 +303,7 @@ def main():
 SPEAK = "--say" in sys.argv
 USE_SNIFFER = "--no-sniffer" not in sys.argv
 if "--quick" in sys.argv:
-    GET_READY_SECONDS = 2
+    WAIT_FOR_ENTER = True
     REST_SECONDS = 1
 sys.argv = [a for a in sys.argv if not a.startswith("--")]
 if len(sys.argv) != 2:

@@ -140,13 +140,14 @@ step it says whether the remote's signal changed:
 Run it in a terminal, in `firmware/coach/`:
 
     python3 coach.py pairing.txt      # first, about 2.5 minutes
-    python3 coach.py controls.txt     # then, about 7 (5 with --quick)
+    python3 coach.py controls.txt     # then, about 7 minutes
 
 Before step 1 it listens for 5 seconds and says whether it can hear the
 remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
-hear each line read aloud too, `--quick` for short countdowns (2 seconds
-to get ready, 1 second between steps), or `--no-sniffer` to run the
-countdown alone. Press **r** if a step went wrong, or showed ❌: it is
+hear each line read aloud too, `--quick` to go at your own pace (each
+step waits for Enter, no countdown), or `--no-sniffer` to run the
+countdown alone. The step lists start by switching on the drone and the
+remote and pairing them, so start with both off. Press **r** if a step went wrong, or showed ❌: it is
 marked bad in the log and done again. Press **q** to stop.
 
 "Changed" means a packet arrived at least 3 times during the step that
