@@ -8,3 +8,5 @@ The relay is not written yet. For now:
 
 - `SETUP.md`: setting up the bench, from a new Mac to a working radio.
 - `RadioCheck/`: checks the nRF24 wiring and scans for radio activity.
+- `SNIFFING.md`: names for every control, and the exact test steps for
+  finding what the remote sends.
