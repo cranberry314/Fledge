@@ -1,28 +1,37 @@
 // Sniffer: tries to read the remote's packets without knowing its address.
 //
-// It listens on each channel, at each data rate, in two ways, for
-// LISTEN_MS each, and prints what arrives. Most of what arrives is random
+// It listens on each channel in turn, for LISTEN_MS each, and prints what
+// arrives. With TRY_EVERYTHING it also tries every data rate and both ways
+// of listening. Most of what arrives is random
 // noise that happens to look like a packet. A real packet is sent over and
 // over, so it arrives many times with exactly the same bytes: the summary
 // after each listen lists anything that arrived 3 times or more.
 //
 // Open the Serial Monitor at 115200 baud.
 //   PKT  one packet: time (ms), channel, data rate, way of listening, bytes
-//   SUM  after each listen: how many packets, and which ones repeated
+//   SUM  after each listen that heard something: how many packets, and
+//        which ones repeated
+//   ROUND  after every channel has been tried once
 
 #include <SPI.h>
 #include <RF24.h>
 
 RF24 radio(4, 5);  // CE = GPIO 4, CSN = GPIO 5 (see firmware/SETUP.md)
 
-// Channels to listen on. The remote pairs on 16-17 (SETUP.md step 5).
-const uint8_t CHANNELS[] = {16, 17};
+// Channels to listen on: every channel from FIRST_CHANNEL to LAST_CHANNEL.
+// The remote pairs on 16-17; once paired it moves to other channels.
+const uint8_t FIRST_CHANNEL = 0;
+const uint8_t LAST_CHANNEL = 125;
 
-// How long to listen each time, in milliseconds.
-const unsigned long LISTEN_MS = 2000;
+// false: listen only the way the remote talks, XN297 at 1 Mbps.
+// true: also try the other data rates and the plain nRF24 way (slower).
+const bool TRY_EVERYTHING = false;
+
+// How long to listen on each channel, in milliseconds.
+const unsigned long LISTEN_MS = 300;
 
 // How many packets to print each time. The rest are only counted.
-const int PRINT_LIMIT = 40;
+const int PRINT_LIMIT = 5;
 
 // The three data rates the nRF24 can use.
 const rf24_datarate_e RATES[] = {RF24_1MBPS, RF24_250KBPS, RF24_2MBPS};
@@ -68,9 +77,14 @@ void setup() {
 void loop() {
   for (int way = XN297; way <= NRF24; way++) {
     for (int r = 0; r < 3; r++) {
-      for (uint8_t channel : CHANNELS) {
+      bool remotesWay = (way == XN297 && r == 0);  // XN297 at 1 Mbps
+      if (!TRY_EVERYTHING && !remotesWay) continue;
+      for (int channel = FIRST_CHANNEL; channel <= LAST_CHANNEL; channel++) {
         listenOnce(channel, r, way);
       }
+      Serial.printf("ROUND %lu done: rate=%s way=%s channels %u-%u\n",
+                    millis(), RATE_NAMES[r], WAY_NAMES[way], FIRST_CHANNEL,
+                    LAST_CHANNEL);
     }
   }
 }
@@ -92,7 +106,7 @@ void listenOnce(uint8_t channel, int r, int way) {
 
   // Once per round for each way, print the radio's real settings, to
   // check the address, address width and CRC really are what we asked for.
-  if (r == 0 && channel == CHANNELS[0]) {
+  if (channel == FIRST_CHANNEL) {
     Serial.printf("--- radio settings for way=%s ---\n", WAY_NAMES[way]);
     radio.printPrettyDetails();
   }
@@ -116,6 +130,7 @@ void listenOnce(uint8_t channel, int r, int way) {
     }
   }
 
+  if (packets == 0) return;  // nothing heard: keep the output short
   Serial.printf("SUM ch=%u rate=%s way=%s packets=%d repeated:", channel,
                 RATE_NAMES[r], WAY_NAMES[way], packets);
   int repeated = 0;

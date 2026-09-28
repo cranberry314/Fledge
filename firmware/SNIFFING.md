@@ -35,6 +35,26 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   checksum matches (XN297 CRC-16, start value 0xB5D2, scrambled-mode
   xorout table), so the decoding is exact. The payload is `10`, then 5
   bytes that are probably this remote's own ID, then ten `00`s.
+- **After pairing** (drone on, then remote on), the remote moves to
+  channels **60, 63 and 65**, still at address `CC CC CC CC CC`, sending
+  a 16-byte payload that passes the checksum. It left channels 16-17
+  within about 8 seconds of being switched on, before the left stick
+  forward-then-back. At rest the payload is:
+  `ID 3F 70 0A 80 80 80 80 00 00 40 3F 00 C0 ID ID`, where the three
+  `ID` bytes match part of the ID in the pairing packet.
+  - `80 80 80 80`: probably the four stick directions, all centred
+    (0x80 is half of 0xFF). The control session will tell.
+  - Byte 1 is `3C`, `3F` or `41`: 60, 63 and 65 in decimal, the three
+    channels. It is probably the next channel to hop to (60 -> 63 ->
+    65 -> 60), but a packet can be heard on neighbouring channels too,
+    so that is not proven yet.
+  - Byte 13 changes with byte 1 (always byte 1 + 0x81 so far): probably
+    a checksum, not yet worked out.
+  - The energy scan could not see any of this because channels 56-68
+    are busy with Wi-Fi here.
+  - Weak packets 16 channels either side (44-49, 76-81) all fail the
+    checksum: the nRF24 also hears strong signals 16 MHz away. They are
+    not the drone talking back.
 - **Not a protocol Multiprotocol already knows.** Its only protocol that
   pairs on `CC CC CC CC CC` is MT99xx, whose pairing payload is 9 bytes
   starting with `20`. So this one gets decoded here, step by step.
@@ -96,8 +116,8 @@ returns to it.
 2. Drone battery charged, 3 fresh AAAs in the remote.
 3. RadioCheck passes (`SETUP.md` step 4).
 4. The sniffer recording, started before the coach, so every step's
-   packets are captured. Both use the Mac's clock. (The sniffer can't
-   follow the remote once it pairs yet: see the next steps in the notes.)
+   packets are captured. Both use the Mac's clock. For the control
+   session, set the sniffer's channels to 60-65.
 
 The motors will probably spin during some steps (left stick forward,
 button 5). With props off that is expected: carry on. Button 7, pressed

@@ -128,7 +128,6 @@ above the baseline. About 10 seconds after the remote came on, 16-17 went
 quiet and stayed quiet, apart from one burst across about 11 scattered
 channels. After that the remote looked no different from the remote being
 off. It had paired: the motors ran when the throttle went up. So the
-remote was transmitting the whole time, and this scan could not see it,
-most likely because it hops too fast. The next step is a packet sniffer,
-starting with the pairing packets on 16-17. To get them, switch the remote
-on with the drone off; it keeps pairing on 16-17.
+remote was transmitting the whole time, and this scan could not see it.
+The sniffer later showed why: once paired it uses channels 60-66, right
+under the Wi-Fi block. Reading the packets is in `SNIFFING.md`.

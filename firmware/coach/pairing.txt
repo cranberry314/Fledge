@@ -8,4 +8,4 @@
 15 Switch the drone on. Its light blinks slowly
 10 Switch the remote on with button 9 (front row, right oval)
 10 Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
-10 Rest: hands off. Both lights should stay on
+120 Rest: hands off. Both lights should stay on
