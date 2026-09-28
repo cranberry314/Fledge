@@ -1,7 +1,7 @@
 import SwiftUI
 
-// A compass: the dial turns so N always points north, and the bird in the
-// middle points the way the phone points. Below it: how far the phone has
+// A compass: the dial turns so N always points north, and the bird above
+// it points the way the phone points. Below it: how far the phone has
 // turned since "Start here". That turn is what will turn the drone.
 struct CompassView: View {
     var motion: Motion
@@ -11,26 +11,24 @@ struct CompassView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            ZStack {
-                // The dial, turned the opposite way to the phone.
-                ZStack {
-                    Circle()
-                        .stroke(.secondary, lineWidth: 3)
-                    ForEach(0..<4) { i in
-                        Text(letters[i])
-                            .font(.title2.bold())
-                            .foregroundStyle(i == 0 ? northColor : .primary)
-                            .offset(y: -size / 2 + 20)
-                            .rotationEffect(.degrees(Double(i) * 90))
-                    }
-                }
-                .rotationEffect(.degrees(-motion.heading))
+            // The way the phone points: always straight up the screen.
+            Text(compassBird)
+                .font(.system(size: 40))
+                .rotationEffect(.degrees(compassBirdTurn))
 
-                // The way the phone points: always straight up the screen.
-                Text(compassBird)
-                    .font(.system(size: 50))
-                    .rotationEffect(.degrees(compassBirdTurn))
+            // The dial, turned the opposite way to the phone.
+            ZStack {
+                Circle()
+                    .stroke(.secondary, lineWidth: 3)
+                ForEach(0..<4) { i in
+                    Text(letters[i])
+                        .font(.title2.bold())
+                        .foregroundStyle(i == 0 ? northColor : .primary)
+                        .offset(y: -size / 2 + 20)
+                        .rotationEffect(.degrees(Double(i) * 90))
+                }
             }
+            .rotationEffect(.degrees(-motion.heading))
             .frame(width: size, height: size)
 
             Text("Pointing \(Int(motion.heading))° \(directionName(motion.heading))")
