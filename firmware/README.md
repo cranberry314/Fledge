@@ -14,3 +14,5 @@ The relay is not written yet. For now:
   runs.
 - `coach/`: a terminal program that counts you through each step of a
   session, and the step lists it reads.
+- `captures/` (not in git): the raw logs of every bench run, with an
+  `INDEX.md` saying what each one was.

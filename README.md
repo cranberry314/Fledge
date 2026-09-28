@@ -9,7 +9,8 @@ The drone itself is not modified.
 ## Folders
 
 - `ios/` — the iPhone app (Swift, SwiftUI)
-- `firmware/` — the ESP32 code (not written yet)
+- `firmware/` — the ESP32 code: bench tools for now (radio check, sniffer,
+  session coach); the relay isn't written yet
 
 ## Changing how Fledge flies
 

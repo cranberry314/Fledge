@@ -4,10 +4,10 @@ coach.py tells you what to do with the remote, one step at a time, with a
 countdown. At the same time it records what the Sniffer ESP32 hears, and
 after each step says whether the remote's signal changed.
 
-    python3 coach.py controls.txt
-    python3 coach.py controls.txt --say         # also read each step aloud
-    python3 coach.py controls.txt --no-sniffer  # just the countdown
-    python3 coach.py controls.txt --pseudo      # a practice run: no checks
+    python3 coach.py sticks.txt
+    python3 coach.py sticks.txt --say         # also read each step aloud
+    python3 coach.py sticks.txt --no-sniffer  # just the countdown
+    python3 coach.py sticks.txt --pseudo      # a practice run: no checks
 
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again

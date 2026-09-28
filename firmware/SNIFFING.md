@@ -38,23 +38,17 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
 - **After pairing** (drone on, then remote on), the remote moves to
   channels **60, 63 and 65**, still at address `CC CC CC CC CC`, sending
   a 16-byte payload that passes the checksum. It left channels 16-17
-  within about 8 seconds of being switched on, before the left stick
-  forward-then-back. At rest the payload is:
+  within about 8 seconds of being switched on. At rest the payload is:
   `ID 3F 70 0A 80 80 80 80 00 00 40 3F 00 C0 ID ID`, where the three
   `ID` bytes match part of the ID in the pairing packet.
-  - `80 80 80 80`: probably the four stick directions, all centred
-    (0x80 is half of 0xFF). The control session will tell.
-  - Byte 1 is `3C`, `3F` or `41`: 60, 63 and 65 in decimal, the three
-    channels. It is probably the next channel to hop to (60 -> 63 ->
-    65 -> 60), but a packet can be heard on neighbouring channels too,
-    so that is not proven yet.
-  - Byte 13 changes with byte 1 (always byte 1 + 0x81 so far): probably
-    a checksum, not yet worked out.
   - The energy scan could not see any of this because channels 56-68
     are busy with Wi-Fi here.
   - Weak packets 16 channels either side (44-49, 76-81) all fail the
     checksum: the nRF24 also hears strong signals 16 MHz away. They are
     not the drone talking back.
+- **Which byte is which control** has been worked out from the coach
+  sessions, and is kept out of this file on purpose, so the byte table
+  can be worked out fresh from the steps below.
 - **Not a protocol Multiprotocol already knows.** Its only protocol that
   pairs on `CC CC CC CC CC` is MT99xx, whose pairing payload is 9 bytes
   starting with `20`. So this one gets decoded here, step by step.
@@ -140,10 +134,9 @@ signal changed:
 
 Run it in a terminal, in `firmware/coach/`, with one of the step lists:
 
-    python3 coach.py controls.txt     # everything, 38 steps
-    python3 coach.py sticks.txt       # stick circles and sweeps
-    python3 coach.py buttons.txt      # the buttons
-    python3 coach.py flips.txt        # a flip in each direction
+    python3 coach.py sticks.txt       # every stick test, 26 steps
+    python3 coach.py buttons.txt      # every button test, 20 steps
+    python3 coach.py flips.txt        # a flip in each direction, 12 steps
 
 Before step 1 it listens for 5 seconds and says whether it can hear the
 remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
@@ -169,27 +162,21 @@ with a remote_changed column) and everything the sniffer printed
 
 The steps are in the `.txt` files in `coach/`: one per line, what to
 do. A line can start with a number of seconds if that step needs a
-different time. Change them there, not here. (`pairing.txt` records
-pairing on its own; the other lists include switching on and pairing.)
+different time. Change them there, not here. Each list starts with a
+rest, the baseline: a number that changes when nobody touches anything
+is probably a counter or checksum, not a control. Then:
 
-**Then the controls**, in this order:
-
-- **Rest**: the baseline. A number that changes when nobody
-  touches anything is probably a counter or checksum, not a control.
-- **Each stick direction, full**: which number moves, and its two ends.
-- **Half** (to a pencil mark): if full, half and neutral fall on a
-  straight line, every position in between follows from them.
-- **Every position, by sweeping**: for each stick, one slow clockwise
-  circle at the edge (the whole outline: round or square, and the values
-  at every angle) and slow sweeps forward to back and left to right
-  (every value in between). About 30 positions a second get recorded.
-  `sticks.txt` runs just these.
-- **Hold, and a quick tap**: does the remote's number grow while a
-  stick is held (the remote ramps), or stay the same (the drone ramps)?
-- **Buttons**, one at a time, then **trims** (both ways the manual might
-  mean, each undone afterwards).
-- **Last, the oval button then the right small round button**, because
-  they start and stop the motors.
+- **`sticks.txt`**: each direction full (which number moves, and its
+  two ends), half to a pencil mark (is the scale a straight line?), a
+  slow clockwise circle and slow sweeps for each stick (every position:
+  about 30 get recorded a second), then a long hold and a quick tap
+  (does the remote's number grow while a stick is held, or only the
+  drone's response?).
+- **`buttons.txt`**: each button on its own, the trims (both ways the
+  manual might mean, each undone), and last the oval button and the
+  right small round button, because they start and stop the motors.
+- **`flips.txt`**: a plain push to compare with, then a flip in each
+  direction, then the top-right button on its own.
 
 ## Afterwards
 
