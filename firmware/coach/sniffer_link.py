@@ -23,6 +23,31 @@ BAUD = termios.B115200
 # checksum (2). Anything after that is noise.
 PACKET_BYTES = 23
 
+# The remote's checksum is a standard CRC-16 (CCITT) over the first 21
+# bytes, as they arrive, XORed with a fixed number. We measured that
+# number from our own recordings (2026-09-28): every good packet gives
+# 0x5B63, and damaged ones almost never do.
+CHECKSUM_CONSTANT = 0x5B63
+
+
+def crc16(data):
+    """CRC-16 CCITT, starting from 0."""
+    crc = 0
+    for byte in data:
+        crc ^= byte << 8
+        for _ in range(8):
+            if crc & 0x8000:
+                crc = ((crc << 1) ^ 0x1021) & 0xFFFF
+            else:
+                crc = (crc << 1) & 0xFFFF
+    return crc
+
+
+def packet_ok(packet):
+    """True if the packet's checksum is right, so it wasn't damaged."""
+    received = (packet[21] << 8) | packet[22]
+    return crc16(packet[:21]) ^ received == CHECKSUM_CONSTANT
+
 
 def find_port():
     """The ESP32's serial port, or None if it isn't plugged in."""
@@ -44,7 +69,8 @@ class SnifferLink:
         termios.tcsetattr(self.fd, termios.TCSANOW, settings)
 
         self.log = open(log_path, "w", encoding="utf-8")
-        self.packets = []  # (time.monotonic() when it arrived, bytes)
+        self.packets = []  # good packets: (time.monotonic(), bytes)
+        self.damaged = 0   # packets with a wrong checksum, only counted
         self.radio_missing = False
         self.running = True
         self.thread = threading.Thread(target=self.read_lines, daemon=True)
@@ -83,8 +109,12 @@ class SnifferLink:
                 data = bytes.fromhex(line.split(":", 1)[1])
             except ValueError:
                 return  # a line cut short when the port opened
-            if len(data) >= PACKET_BYTES:
+            if len(data) < PACKET_BYTES:
+                return
+            if packet_ok(data):
                 self.packets.append((time.monotonic(), data[:PACKET_BYTES]))
+            else:
+                self.damaged += 1
 
     def packets_between(self, start, end):
         """Packets that arrived between two time.monotonic() times."""

@@ -98,11 +98,27 @@ def count_down(seconds):
     return None
 
 
+def control_bytes(packet):
+    """The bytes of a packet that carry the sticks and buttons: bytes 7-17.
+    The rest is the address, the next hop channel and checksums, which
+    change as the remote hops even when nobody touches it."""
+    return packet[7:18]
+
+
 def remote_changed(before, during):
-    """Did the remote send something new during the step?
-    New means: a packet that arrived at least 3 times during the step, and
-    never in the countdown just before it. Random noise almost never
-    arrives 3 times with the same bytes."""
+    """Did the remote send something different during the step?
+    Yes if what it mostly sent during the step is not what it mostly sent
+    in the countdown before it, or if something new arrived at least 3
+    times (a quick button press). Only packets with a good checksum get
+    this far (see sniffer_link.py)."""
+    before = [control_bytes(p) for p in before]
+    during = [control_bytes(p) for p in during]
+    if not before:
+        return False
+    usual_before = collections.Counter(before).most_common(1)[0][0]
+    usual_during = collections.Counter(during).most_common(1)[0][0]
+    if usual_during != usual_before:
+        return True
     seen_before = set(before)
     new = collections.Counter(p for p in during if p not in seen_before)
     return any(count >= 3 for count in new.values())
