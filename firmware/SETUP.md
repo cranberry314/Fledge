@@ -120,11 +120,15 @@ a few faint hits while it was on: possibly hopping, possibly noise.
 With the drone off, the remote is probably still trying to pair, so the
 channels may change once the drone is on.
 
+**Props off** for every bench test with the drone switched on: a paired
+drone spins up as soon as the throttle moves.
+
 **Result (drone on, then remote on):** the drone alone showed nothing
 above the baseline. About 10 seconds after the remote came on, 16-17 went
 quiet and stayed quiet, apart from one burst across about 11 scattered
 channels. After that the remote looked no different from the remote being
-off. It most likely paired and started hopping too fast for this scan to
-see. The scan cannot show that, so the next step is a packet sniffer,
+off. It had paired: the motors ran when the throttle went up. So the
+remote was transmitting the whole time, and this scan could not see it,
+most likely because it hops too fast. The next step is a packet sniffer,
 starting with the pairing packets on 16-17. To get them, switch the remote
 on with the drone off; it keeps pairing on 16-17.
