@@ -84,25 +84,26 @@ you), **left**, **right**.
 - **full**: pushed until it stops.
 - **half**: to a pencil mark on the remote, drawn once and reused.
 
-**Buttons.** By the number in the manual's "Parts of remote control"
-picture. Put a small numbered sticker on each one before the first
-session. Positions below are as the manual draws them; check each one on
-the real remote and fix this table if it differs.
+**Buttons.** By what you see, holding the remote normally: two on the
+top edge, then below the sticks a row of an oval button, two small round
+buttons and the power switch. (The manual numbers them in a diagram; the
+numbers aren't on the remote, so they are only here for looking things
+up in the manual.)
 
-| # | Where (remote held normally) | Manual's name | Press | Hold ~3 s |
-|---|------------------------------|---------------|-------|-----------|
-| 1 | top edge, left (shoulder) | High/low speed | change speed | ? |
-| 2 | top edge, right (shoulder) | One-key flips & rolls 360° | arm a flip; then push the right stick full in a direction | ? |
-| 5 | front row, left oval | One-key ascend/landing | take off / land | trim mode (see below) |
-| 6 | front row, first round | Light switch | lights (manual unclear) | lights off? |
-| 7 | front row, second round | Emergency stop / correction | **stop motors** | level calibration (remote beeps, drone lights flicker ~3 s) |
-| 8 | front row, small dot | Indicator light | (not a button) | |
-| 9 | front row, right oval | Power switch | on / off | |
+| Name | Manual # | Manual's name | Press | Hold ~3 s |
+|------|----------|---------------|-------|-----------|
+| **top-left button** | 1 | High/low speed | change speed | ? |
+| **top-right button** 🤸 | 2 | One-key flips & rolls 360° | arm a flip; then push the right stick full in a direction | ? |
+| **oval button** | 5 | One-key ascend/landing | take off / land | trim (see below) |
+| **left small round button** | 6 | Light switch | lights (manual unclear) | lights off? |
+| **right small round button** 🛑 | 7 | Emergency stop / correction | **stop motors** | level calibration (remote beeps, drone lights flicker ~3 s) |
+| **power switch** | 9 | Power switch | on / off | |
 
-**Trims** ("fine-tuning"): the manual says to long-press button 5 "and
-then" push the right stick in the direction to correct. It doesn't say
-whether button 5 stays held while pushing, or whether a long press enters
-a trim mode. The trim steps try both, and the packets say which works.
+**Trims** ("fine-tuning"): the manual says to long-press the oval button
+"and then" push the right stick in the direction to correct. It doesn't
+say whether the oval button stays held while pushing, or whether a long
+press enters a trim mode. The trim steps try both, and the packets say
+which works.
 Count each push as one click.
 
 **Rest** means: both sticks neutral, hands off the buttons, trims
@@ -111,16 +112,16 @@ returns to it.
 
 ## Before each session
 
-1. **Props off**, said out loud. Button 5 and the left stick both spin
-   the motors once paired.
+1. **Props off**, said out loud. The oval button and the left stick both
+   spin the motors once paired.
 2. Drone battery charged, 3 fresh AAAs in the remote.
 3. RadioCheck passes (`SETUP.md` step 4).
 4. The ESP32 running `Sniffer` plugged in, with its channels set to 65
    to 65 for a control session. The coach records it by itself.
 
 The motors will probably spin during some steps (left stick forward,
-button 5). With props off that is expected: carry on. Button 7, pressed
-once, stops them at any time.
+the oval button). With props off that is expected: carry on. The right
+small round button, pressed once, stops them at any time.
 
 ## Running a session
 
@@ -177,8 +178,8 @@ channels. `controls.txt` starts where it ends, with the two paired.
   stick is held (the remote ramps), or stay the same (the drone ramps)?
 - **Buttons**, one at a time, then **trims** (both ways the manual might
   mean, each undone afterwards).
-- **Last, button 5 then button 7**, because they start and stop the
-  motors.
+- **Last, the oval button then the right small round button**, because
+  they start and stop the motors.
 
 ## Afterwards
 
