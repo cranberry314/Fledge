@@ -117,7 +117,7 @@ returns to it.
 3. RadioCheck passes (`SETUP.md` step 4).
 4. The sniffer recording, started before the coach, so every step's
    packets are captured. Both use the Mac's clock. For the control
-   session, set the sniffer's channels to 60-65.
+   session, set the sniffer's channels to 65 to 65.
 
 The motors will probably spin during some steps (left stick forward,
 button 5). With props off that is expected: carry on. Button 7, pressed
@@ -137,10 +137,11 @@ logs exactly when each step started and ended:
 
 Run it in a terminal, in `firmware/coach/`:
 
-    python3 coach.py pairing.txt      # first, about 2 minutes
-    python3 coach.py controls.txt     # then, about 7 minutes
+    python3 coach.py pairing.txt      # first, about 2.5 minutes
+    python3 coach.py controls.txt     # then, about 7 (5 with --quick)
 
-Add `--say` to hear each line read aloud too. Press **r** if a step went
+Add `--say` to hear each line read aloud too, or `--quick` for short
+countdowns (2 seconds to get ready, 1 second between steps). Press **r** if a step went
 wrong (wrong button, stick slipped): it is marked bad in the log and done
 again. Press **q** to stop. Logs go in `firmware/captures/`, which git
 ignores.

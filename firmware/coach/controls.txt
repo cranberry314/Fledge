@@ -6,22 +6,22 @@
 10 Rest: hands off everything
 
 # Sticks, full: which number moves, and its two ends.
-5 Left stick ⬆️ full forward
-5 Left stick ⬇️ full back
-5 Left stick ⬅️ full left
-5 Left stick ➡️ full right
-5 Right stick ⬆️ full forward
-5 Right stick ⬇️ full back
-5 Right stick ⬅️ full left
-5 Right stick ➡️ full right
+3 Left stick ⬆️ full forward
+3 Left stick ⬇️ full back
+3 Left stick ⬅️ full left
+3 Left stick ➡️ full right
+3 Right stick ⬆️ full forward
+3 Right stick ⬇️ full back
+3 Right stick ⬅️ full left
+3 Right stick ➡️ full right
 
 # Sticks, half: is the scale a straight line?
-5 Left stick ⬆️ half forward, to the pencil mark
-5 Right stick ⬆️ half forward, to the pencil mark
-5 Right stick ➡️ half right, to the pencil mark
+3 Left stick ⬆️ half forward, to the pencil mark
+3 Right stick ⬆️ half forward, to the pencil mark
+3 Right stick ➡️ half right, to the pencil mark
 
 # Diagonal: are forward and right two separate numbers?
-5 Right stick ↗️ full forward and full right, into the corner
+3 Right stick ↗️ full forward and full right, into the corner
 
 # Timing: does the remote's number grow while a stick is held?
 10 Right stick ⬆️ full forward, and hold it there

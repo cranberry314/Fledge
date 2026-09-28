@@ -19,9 +19,11 @@
 RF24 radio(4, 5);  // CE = GPIO 4, CSN = GPIO 5 (see firmware/SETUP.md)
 
 // Channels to listen on: every channel from FIRST_CHANNEL to LAST_CHANNEL.
-// The remote pairs on 16-17; once paired it moves to other channels.
-const uint8_t FIRST_CHANNEL = 0;
-const uint8_t LAST_CHANNEL = 125;
+// The remote pairs on 16-17; once paired it uses 60, 63 and 65.
+// 0 to 125: search everywhere. 65 to 65: a control session (channel 65
+// also hears the remote's channel 63 packets).
+const uint8_t FIRST_CHANNEL = 65;
+const uint8_t LAST_CHANNEL = 65;
 
 // false: listen only the way the remote talks, XN297 at 1 Mbps.
 // true: also try the other data rates and the plain nRF24 way (slower).
@@ -31,7 +33,7 @@ const bool TRY_EVERYTHING = false;
 const unsigned long LISTEN_MS = 300;
 
 // How many packets to print each time. The rest are only counted.
-const int PRINT_LIMIT = 5;
+const int PRINT_LIMIT = 10;
 
 // The three data rates the nRF24 can use.
 const rf24_datarate_e RATES[] = {RF24_1MBPS, RF24_250KBPS, RF24_2MBPS};
@@ -104,9 +106,11 @@ void listenOnce(uint8_t channel, int r, int way) {
   }
   radio.startListening();
 
-  // Once per round for each way, print the radio's real settings, to
-  // check the address, address width and CRC really are what we asked for.
-  if (channel == FIRST_CHANNEL) {
+  // Every 30 seconds, print the radio's real settings, to check the
+  // address, address width and CRC really are what we asked for.
+  static unsigned long settingsShown = 0;
+  if (settingsShown == 0 || millis() - settingsShown > 30000) {
+    settingsShown = millis();
     Serial.printf("--- radio settings for way=%s ---\n", WAY_NAMES[way]);
     radio.printPrettyDetails();
   }

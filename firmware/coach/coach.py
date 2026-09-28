@@ -7,6 +7,7 @@ recording can then be matched to the steps by time.
     python3 coach.py pairing.txt
     python3 coach.py controls.txt
     python3 coach.py controls.txt --say     # also read each step aloud
+    python3 coach.py controls.txt --quick   # shorter countdowns
 
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again
@@ -158,7 +159,10 @@ def main():
 
 
 SPEAK = "--say" in sys.argv
-sys.argv = [a for a in sys.argv if a != "--say"]
+if "--quick" in sys.argv:
+    GET_READY_SECONDS = 2
+    REST_SECONDS = 1
+sys.argv = [a for a in sys.argv if a not in ("--say", "--quick")]
 if len(sys.argv) != 2:
     print(__doc__)
     sys.exit(1)
