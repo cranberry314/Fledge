@@ -5,7 +5,7 @@ countdown. At the same time it records what the Sniffer ESP32 hears, and
 after each step says whether the remote's signal changed.
 
     python3 coach.py controls.txt
-    python3 coach.py controls.txt --quick       # wait for Enter, no countdown
+    python3 coach.py controls.txt --quick       # Go! straight after Enter
     python3 coach.py controls.txt --say         # also read each step aloud
     python3 coach.py controls.txt --no-sniffer  # just the countdown
     python3 coach.py controls.txt --pseudo      # a practice run: no checks
@@ -13,7 +13,8 @@ after each step says whether the remote's signal changed.
 Keys while it runs:
     r   that step went wrong: it is marked bad and done again
     q   stop
-    Enter   with --quick: start the step shown
+    Enter   start the step shown (then a 30 s countdown, or none with
+            --quick)
 
 The steps are in the .txt files: one step per line, the number of seconds
 first, then what to do. With --pseudo every step ends with a thumbs up,
@@ -36,14 +37,14 @@ import tty
 
 from sniffer_link import SnifferLink, find_port
 
-# Countdown before each step, in seconds.
-GET_READY_SECONDS = 5
+# Countdown after Enter, before Go!, in seconds (not with --quick).
+GET_READY_SECONDS = 30
 
 # Countdown after letting go, before the next step, in seconds.
 REST_SECONDS = 3
 
-# With --quick: no countdown; show each step and wait for Enter.
-WAIT_FOR_ENTER = False
+# With --quick: no countdown after Enter; Go! straight away.
+COUNTDOWN = True
 
 # How long to listen for the remote before step 1, in seconds.
 CHECK_SECONDS = 5
@@ -186,22 +187,17 @@ def run_step(seconds, text):
     unit = "second" if seconds == 1 else "seconds"
 
     ready_from = time.monotonic()
-    if WAIT_FOR_ENTER:
-        say(f"{text}  ⏱ {seconds} {unit}")
-        print("Press Enter to start.", flush=True)
-        key = wait_for_enter()
-        if key:
-            return None, None, key, ""
-        say("Go!")
-    elif kind == "rest":
-        say(f"{text}  ⏱ {seconds} {unit}")
-    else:
-        say(f"{text}  ⏱ {seconds} {unit}")
+    say(f"{text}  ⏱ {seconds} {unit}")
+    print("Press Enter to start.", flush=True)
+    key = wait_for_enter()
+    if key:
+        return None, None, key, ""
+    if COUNTDOWN and kind != "rest":
         say("Get ready:")
         key = count_down(GET_READY_SECONDS)
         if key:
             return None, None, key, ""
-        say("Go!")
+    say("Go!")
 
     hold_from = time.monotonic()
     start = timestamp()
@@ -329,7 +325,7 @@ SPEAK = "--say" in sys.argv
 USE_SNIFFER = "--no-sniffer" not in sys.argv
 PSEUDO = "--pseudo" in sys.argv
 if "--quick" in sys.argv:
-    WAIT_FOR_ENTER = True
+    COUNTDOWN = False
     REST_SECONDS = 1
 sys.argv = [a for a in sys.argv if not a.startswith("--")]
 if len(sys.argv) != 2:

@@ -125,12 +125,14 @@ small round button, pressed once, stops them at any time.
 
 ## Running a session
 
-`coach/coach.py` reads out each step with a countdown, like this. At
-the same time it records everything the sniffer hears, and after each
-step it says whether the remote's signal changed:
+`coach/coach.py` shows each step, waits for Enter, and counts you
+through it, like this. At the same time it records everything the
+sniffer hears, and after each step it says whether the remote's signal
+changed:
 
-    Right stick ⬆️ full forward, for 5 seconds, in
-    5 4 3 2 1 (one per line)
+    Right stick ⬆️ full forward  ⏱ 5 seconds
+    Press Enter to start.
+    Get ready: 30 29 ... 1 (one per line; none with --quick)
     Go!
     5 4 3 2 1
     ✅ The remote's signal changed      (or ❌ No change seen)
@@ -144,8 +146,8 @@ Run it in a terminal, in `firmware/coach/`:
 
 Before step 1 it listens for 5 seconds and says whether it can hear the
 remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
-hear each line read aloud too, `--quick` to go at your own pace (each
-step waits for Enter, no countdown), `--no-sniffer` to run the
+hear each line read aloud too, `--quick` to go straight to Go! after
+Enter (otherwise there's a 30-second countdown), `--no-sniffer` to run the
 countdown alone, or `--pseudo` for a practice run: the same prompts, no
 checks, a 👍 after every step, and logs named `...-pseudo` so they are
 never mistaken for real data.
