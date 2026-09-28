@@ -6,7 +6,7 @@ import SwiftUI
 struct CompassView: View {
     var motion: Motion
 
-    let size = 180.0
+    let size = 160.0
     let letters = ["N", "E", "S", "W"]
 
     var body: some View {

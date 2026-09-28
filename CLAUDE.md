@@ -48,7 +48,7 @@ code over abstraction. Bluetooth and motion code stay in their own files,
 so nobody needs to open them to change how Fledge flies.
 
 Swift 5 language mode, MainActor by default, iOS 26.0 minimum, iPhone only,
-portrait.
+landscape with the charging port on the right (the motion code assumes it).
 
 ## Building from the command line
 

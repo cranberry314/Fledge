@@ -4,13 +4,18 @@ import Observation
 // Reads the phone's motion sensors: how it is tilted (for the bubble
 // level) and which way it points (for the compass). Screens only read the
 // numbers below; nothing else needs to open this file.
+//
+// The app is used sideways (landscape) with the charging port on the
+// right. The sensors measure along the phone's own edges as if it stood
+// upright, so: the screen's right side is the phone's bottom edge, and the
+// screen's far (top) edge is the phone's right edge.
 @Observable
 class Motion {
     // How far the phone is tipped, in degrees. 0 when it lies flat.
-    var tiltRight = 0.0    // + when the right edge is lower
-    var tiltForward = 0.0  // + when the top edge is lower
+    var tiltRight = 0.0    // + when the screen's right side is lower
+    var tiltForward = 0.0  // + when the screen's far edge is lower
 
-    // Which way the top of the phone points: 0 = north, 90 = east.
+    // Which way the far edge of the screen points: 0 = north, 90 = east.
     var heading = 0.0
 
     // How far the phone has turned since "Start here", in degrees:
@@ -41,13 +46,13 @@ class Motion {
 
     private func update(_ data: CMDeviceMotion) {
         let gravity = data.gravity
-        tiltRight = degrees(asin(min(max(gravity.x, -1), 1)))
-        tiltForward = degrees(asin(min(max(gravity.y, -1), 1)))
+        tiltRight = degrees(asin(min(max(-gravity.y, -1), 1)))
+        tiltForward = degrees(asin(min(max(gravity.x, -1), 1)))
 
-        // The sensors say how far the phone has turned from "right edge
-        // points north". The top edge is a quarter turn to the left of the
-        // right edge, so it points 270 degrees on from that.
-        heading = wrapTo360(270 - degrees(data.attitude.yaw))
+        // The sensors say how far the phone has turned from "the phone's
+        // right edge points north", counting anticlockwise. Held sideways,
+        // that edge is the screen's far edge, the way we point.
+        heading = wrapTo360(-degrees(data.attitude.yaw))
 
         if startHeading == nil {
             startHeading = heading

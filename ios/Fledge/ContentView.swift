@@ -7,10 +7,8 @@ struct ContentView: View {
     @State private var spins = 0.0
 
     var body: some View {
-        VStack(spacing: 24) {
-            Text("🐣 Fledge")
-                .font(.largeTitle.bold())
-
+        // Held sideways: the level, the compass and the flip button in a row.
+        HStack(spacing: 40) {
             LevelView(motion: motion)
 
             CompassView(motion: motion)

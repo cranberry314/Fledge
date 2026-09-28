@@ -5,7 +5,7 @@ import SwiftUI
 struct LevelView: View {
     var motion: Motion
 
-    let size = 180.0
+    let size = 160.0
     let bubbleSize = 36.0
 
     var body: some View {
