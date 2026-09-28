@@ -147,11 +147,14 @@ remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
 hear each line read aloud too, `--quick` to go at your own pace (each
 step waits for Enter, no countdown), or `--no-sniffer` to run the
 countdown alone. The step lists start by switching on the drone and the
-remote and pairing them, so start with both off. Press **r** if a step went wrong, or showed ❌: it is
-marked bad in the log and done again. Press **q** to stop.
+remote and pairing them, so start with both off. Press **r** if a step
+went wrong, or showed ❌: it is marked bad in the log and done again.
+Press **q** to stop.
 
-"Changed" means a packet arrived at least 3 times during the step that
-never arrived in the countdown just before it. The coach doesn't know
+"Changed" means what the remote mostly sent during the step differs from
+the 2 seconds before Go!, or something new arrived at least 3 times (a
+quick button press). Only packets with a correct checksum count; damaged
+copies can repeat and would look like a change. The coach doesn't know
 which byte means what; that's for the paper table afterwards.
 
 Two logs go in `firmware/captures/`, which git ignores: the steps (.csv,
