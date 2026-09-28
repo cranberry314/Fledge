@@ -20,8 +20,8 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   height ("Hover" in the manual). So the left stick sets how fast to
   climb or sink, and holding it longer makes the drone go higher. That
   may explain why a short push gives "a little" and a long push "a lot".
-  Test 13 checks whether the remote's numbers change while a stick is
-  held, or only the drone's response does.
+  The hold test checks whether the remote's numbers change while a stick
+  is held, or only the drone's response does.
 - The manual is shared by several models (it mentions "WIFI control",
   which this drone has no hardware for) and has no FCC ID. If no sticker
   turns up (remote battery cover, drone battery bay, box), open the remote
@@ -66,7 +66,7 @@ the real remote and fix this table if it differs.
 **Trims** ("fine-tuning"): the manual says to long-press button 5 "and
 then" push the right stick in the direction to correct. It doesn't say
 whether button 5 stays held while pushing, or whether a long press enters
-a trim mode. Test 19 tries both, and the packets say which one works.
+a trim mode. The trim steps try both, and the packets say which works.
 Count each push as one click.
 
 **Rest** means: both sticks neutral, hands off the buttons, trims
@@ -79,79 +79,60 @@ returns to it.
    the motors once paired.
 2. Drone battery charged, 3 fresh AAAs in the remote.
 3. RadioCheck passes (`SETUP.md` step 4).
-4. Remote and drone paired as above, then **5 seconds at rest**.
+4. The sniffer recording (not written yet), started before the coach, so
+   every step's packets are captured. Both use the Mac's clock.
 
 The motors will probably spin during some steps (left stick forward,
 button 5). With props off that is expected: carry on. Button 7, pressed
 once, stops them at any time.
 
-## First: the pairing packets
+## Running a session
 
-Before the control tests, record pairing on its own, because the pairing
-packets probably carry the remote's ID and maybe its channel list.
+`coach/coach.py` reads out each step with a countdown, like this, and
+logs exactly when each step started and ended:
 
-| # | Step |
-|---|------|
-| P1 | Drone off. Remote on, sticks untouched, 30 s. (The remote stays on channels 16-17, waiting to pair.) Then remote off. |
-| P2 | The manual's order: drone on, wait until its light blinks slowly. Remote on. Left stick full forward (beep), left stick full back (beep). Wait until both lights stay on, then 10 s at rest. |
+    Right stick ⬆️ full forward, for 5 seconds, in
+    5 4 3 2 1 (one per line)
+    Go!
+    5 4 3 2 1
+    Let go ✋
+    3 2 1
 
-## The tests
+Run it in a terminal, in `firmware/coach/`:
 
-Hold each step for **5 seconds**, then **5 seconds at rest**, unless the
-step says otherwise. Change only the one thing the step names. If a step
-goes wrong (wrong button, stick slipped), say so, go back to rest, and
-repeat that step; don't carry on as if it worked.
+    python3 coach.py pairing.txt      # first, about 2 minutes
+    python3 coach.py controls.txt     # then, about 7 minutes
 
-**Sticks, full** (which number moves, and its two ends)
+Add `--say` to hear each line read aloud too. Press **r** if a step went
+wrong (wrong button, stick slipped): it is marked bad in the log and done
+again. Press **q** to stop. Logs go in `firmware/captures/`, which git
+ignores.
 
-| # | Step |
-|---|------|
-| 1 | Rest, 10 s: the baseline. Note which numbers change by themselves. |
-| 2 | Left stick full forward |
-| 3 | Left stick full back |
-| 4 | Left stick full left |
-| 5 | Left stick full right |
-| 6 | Right stick full forward |
-| 7 | Right stick full back |
-| 8 | Right stick full left |
-| 9 | Right stick full right |
+The steps are in `pairing.txt` and `controls.txt`: one per line, the
+number of seconds, then what to do. Change them there, not here.
 
-**Sticks, half** (is the scale a straight line?)
+**Pairing first**, on its own, starting with the remote and drone off:
+the pairing packets probably carry the remote's ID and maybe its list of
+channels. `controls.txt` starts where it ends, with the two paired.
 
-| # | Step |
-|---|------|
-| 10 | Left stick half forward |
-| 11 | Right stick half forward |
-| 12 | Right stick half right |
+**Then the controls**, in this order:
 
-**Timing** (does the remote's number ramp while held?)
-
-| # | Step |
-|---|------|
-| 13 | Right stick full forward, **held 10 s** |
-| 14 | Left stick full forward, **held 10 s** |
-| 15 | Right stick full forward, **quick tap** (under half a second) |
-
-**Buttons** (one press each, then rest; drone lights and remote beeps
-noted as they happen)
-
-| # | Step |
-|---|------|
-| 16 | Button 1, press once. Then press again until it is back where it started, counting presses and beeps: that is the number of speeds. |
-| 17 | Button 6, press once. Then button 6, hold 3 s. Then put the lights back as they were. |
-| 18 | Button 2, press once, then right stick full forward (the flip command; on the bench the drone will not flip). |
-| 19a | Trim, try 1: hold button 5 down, and while holding it, right stick full right 3 times. Let go of button 5. Note any beeps. |
-| 19b | Trim, try 2: hold button 5 for 3 s and let go. Then right stick full right 3 times. Note any beeps. |
-| 19c | Undo whichever try changed a byte: the same method, right stick full left, until that byte is back to its rest value. |
-| 20 | Button 7, hold 3 s (level calibration). Drone must sit level. |
-| 21 | Button 5, press once (take off: motors spin, props off). |
-| 22 | Button 7, press once (emergency stop: motors stop). |
-
-Button 7's press is last because it stops the motors, and button 5
-before it because it starts them.
+- **Rest, 10 s**: the baseline. A number that changes when nobody
+  touches anything is probably a counter or checksum, not a control.
+- **Each stick direction, full**: which number moves, and its two ends.
+- **Half** (to a pencil mark): if full, half and neutral fall on a
+  straight line, every position in between follows from them.
+- **Diagonal**, right stick into the corner: if the packet shows the
+  full-forward number and the full-right number together, forward and
+  right are two separate numbers, and any angle is just a mix of the two.
+- **Hold 10 s, and a quick tap**: does the remote's number grow while a
+  stick is held (the remote ramps), or stay the same (the drone ramps)?
+- **Buttons**, one at a time, then **trims** (both ways the manual might
+  mean, each undone afterwards).
+- **Last, button 5 then button 7**, because they start and stop the
+  motors.
 
 ## Afterwards
 
-For each test, write the result in a table on paper: which byte changed,
-its value at rest, and its value in the step. A byte that changed in
-test 1 (by itself) is probably a counter or checksum, not a control.
+For each step, write the result in a table on paper: which byte changed,
+its value at rest, and its value in the step.

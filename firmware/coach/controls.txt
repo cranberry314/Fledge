@@ -1,0 +1,48 @@
+# Control steps for coach.py. See firmware/SNIFFING.md.
+# Each line: how many seconds, then what to do.
+# Before starting: props off, remote and drone paired (pairing.txt).
+
+# The baseline: what changes when nobody touches anything.
+10 Rest: hands off everything
+
+# Sticks, full: which number moves, and its two ends.
+5 Left stick ⬆️ full forward
+5 Left stick ⬇️ full back
+5 Left stick ⬅️ full left
+5 Left stick ➡️ full right
+5 Right stick ⬆️ full forward
+5 Right stick ⬇️ full back
+5 Right stick ⬅️ full left
+5 Right stick ➡️ full right
+
+# Sticks, half: is the scale a straight line?
+5 Left stick ⬆️ half forward, to the pencil mark
+5 Right stick ⬆️ half forward, to the pencil mark
+5 Right stick ➡️ half right, to the pencil mark
+
+# Diagonal: are forward and right two separate numbers?
+5 Right stick ↗️ full forward and full right, into the corner
+
+# Timing: does the remote's number grow while a stick is held?
+10 Right stick ⬆️ full forward, and hold it there
+10 Left stick ⬆️ full forward, and hold it there
+1 Right stick ⬆️ full forward, a quick tap
+
+# Buttons.
+15 Button 1 (top edge, left): press it until it's back where it started. Count the beeps
+5 Button 6 (front row, first round): press once
+5 Button 6 (front row, first round): hold it down for 3 seconds
+10 Button 6 (front row, first round): press until the lights are back as they were
+10 Button 2 (top edge, right) 🤸: press once, then right stick ⬆️ full forward
+
+# Trims: two ways to try, then undo both.
+15 Trim try 1: hold button 5 (front row, left oval) down, and push right stick ➡️ full right 3 times
+15 Trim try 2: hold button 5 (front row, left oval) for 3 seconds, let go, then push right stick ➡️ full right 3 times
+15 Undo try 1: hold button 5 (front row, left oval) down, and push right stick ⬅️ full left 3 times
+15 Undo try 2: hold button 5 (front row, left oval) for 3 seconds, let go, then push right stick ⬅️ full left 3 times
+
+# Last, because they start and stop the motors. Props off!
+8 Button 7 (front row, second round): hold it down for 3 seconds. The drone must sit level
+5 Button 5 (front row, left oval): press once. The motors spin
+5 Button 7 (front row, second round) 🛑: press once. The motors stop
+10 Rest: hands off everything

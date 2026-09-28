@@ -21,3 +21,6 @@ ios/Local.xcconfig
 # Personal context for Claude (never public)
 CLAUDE.local.md
 .claude/settings.local.json
+
+# Sniffing session recordings and coach logs
+firmware/captures/

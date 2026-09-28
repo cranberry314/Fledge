@@ -1,0 +1,11 @@
+# Pairing steps for coach.py. See firmware/SNIFFING.md.
+# Each line: how many seconds, then what to do.
+# Before starting: props off, remote off, drone off.
+
+10 Rest: remote off, drone off, hands off
+30 Switch the remote on with button 9 (front row, right oval). Hands off the sticks
+5 Switch the remote off with button 9 (front row, right oval)
+15 Switch the drone on. Its light blinks slowly
+10 Switch the remote on with button 9 (front row, right oval)
+10 Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
+10 Rest: hands off. Both lights should stay on
