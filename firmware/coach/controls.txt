@@ -3,7 +3,7 @@
 # Before starting: props off, remote and drone paired (pairing.txt).
 
 # The baseline: what changes when nobody touches anything.
-10 Rest: hands off everything
+8 Rest: hands off everything
 
 # Sticks, full: which number moves, and its two ends.
 3 Left stick ⬆️ full forward
@@ -24,16 +24,16 @@
 3 Right stick ↗️ full forward and full right, into the corner
 
 # Timing: does the remote's number grow while a stick is held?
-10 Right stick ⬆️ full forward, and hold it there
-10 Left stick ⬆️ full forward, and hold it there
+8 Right stick ⬆️ full forward, and hold it there
+8 Left stick ⬆️ full forward, and hold it there
 1 Right stick ⬆️ full forward, a quick tap
 
 # Buttons.
 15 Top-left button: press it again and again until it's back where it started. Count the beeps
 5 Left small round button: press once
 5 Left small round button: hold it down for 3 seconds
-10 Left small round button: press until the drone's lights are back as they were
-10 Top-right button 🤸: press once, then right stick ⬆️ full forward
+8 Left small round button: press until the drone's lights are back as they were
+8 Top-right button 🤸: press once, then right stick ⬆️ full forward
 
 # Trims: two ways to try, then undo both.
 15 Trim try 1: hold the oval button down, and while holding it, push right stick ➡️ full right 3 times
@@ -45,4 +45,4 @@
 8 Right small round button: hold it down for 3 seconds. The drone must sit level
 5 Oval button: press once. The motors spin
 5 Right small round button 🛑: press once. The motors stop
-10 Rest: hands off everything
+8 Rest: hands off everything
