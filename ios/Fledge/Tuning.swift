@@ -26,3 +26,9 @@ let levelColor = Color.green
 
 // 🧭 the colour of the N on the compass
 let northColor = Color.red
+
+// 🐣 the bird in the compass: it points the way you're facing
+let compassBird = "🐣"
+
+// 🔄 turn the bird until its beak points up (in degrees, clockwise)
+let compassBirdTurn = 90.0

@@ -1,7 +1,7 @@
 import SwiftUI
 
-// A compass: the dial turns so N always points north, and the arrow at the
-// top shows which way the phone points. Below it: how far the phone has
+// A compass: the dial turns so N always points north, and the bird in the
+// middle points the way the phone points. Below it: how far the phone has
 // turned since "Start here". That turn is what will turn the drone.
 struct CompassView: View {
     var motion: Motion
@@ -27,8 +27,9 @@ struct CompassView: View {
                 .rotationEffect(.degrees(-motion.heading))
 
                 // The way the phone points: always straight up the screen.
-                Image(systemName: "location.north.fill")
-                    .font(.largeTitle)
+                Text(compassBird)
+                    .font(.system(size: 50))
+                    .rotationEffect(.degrees(compassBirdTurn))
             }
             .frame(width: size, height: size)
 
