@@ -1,0 +1,30 @@
+# Button steps only, for coach.py. See firmware/SNIFFING.md.
+# Each line: how many seconds, then what to do.
+# Before starting: props off, remote and drone paired.
+
+10 Rest: hands off everything
+
+# Top-left button, three single presses: how many speeds are there?
+5 Top-left button: press once. Count the beeps
+5 Top-left button: press once. Count the beeps
+5 Top-left button: press once. Count the beeps
+
+# Left small round button: the lights.
+5 Left small round button: press once. Watch the drone's lights
+5 Left small round button: press once. Watch the drone's lights
+5 Left small round button: hold it down for 3 seconds. Watch the lights
+
+# Top-right button: the flip.
+10 Top-right button 🤸: press once, then right stick ⬆️ full forward
+
+# Trims: two ways to try, then undo both.
+15 Trim try 1: hold the oval button down, and while holding it, push right stick ➡️ full right 3 times
+15 Trim try 2: hold the oval button for 3 seconds, let go, then push right stick ➡️ full right 3 times
+15 Undo try 1: hold the oval button down, and while holding it, push right stick ⬅️ full left 3 times
+15 Undo try 2: hold the oval button for 3 seconds, let go, then push right stick ⬅️ full left 3 times
+
+# Last, because they start and stop the motors. Props off!
+8 Right small round button: hold it down for 3 seconds. The drone must sit level
+5 Oval button: press once. The motors spin
+5 Right small round button 🛑: press once. The motors stop
+10 Rest: hands off everything
