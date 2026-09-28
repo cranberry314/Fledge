@@ -17,3 +17,12 @@ let flipButtonColor = Color.purple
 
 // 🤸 the picture on the flip button
 let flipButtonEmoji = "🤸"
+
+// 🫧 the colour of the bubble in the level
+let bubbleColor = Color.orange
+
+// ✅ the bubble's colour when the phone is level
+let levelColor = Color.green
+
+// 🧭 the colour of the N on the compass
+let northColor = Color.red
