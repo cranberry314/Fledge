@@ -24,3 +24,6 @@ CLAUDE.local.md
 
 # Sniffing session recordings and coach logs
 firmware/captures/
+
+# Python bytecode
+__pycache__/
