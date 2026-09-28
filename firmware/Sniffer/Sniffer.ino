@@ -84,9 +84,11 @@ void loop() {
       for (int channel = FIRST_CHANNEL; channel <= LAST_CHANNEL; channel++) {
         listenOnce(channel, r, way);
       }
-      Serial.printf("ROUND %lu done: rate=%s way=%s channels %u-%u\n",
-                    millis(), RATE_NAMES[r], WAY_NAMES[way], FIRST_CHANNEL,
-                    LAST_CHANNEL);
+      if (FIRST_CHANNEL != LAST_CHANNEL) {  // one channel: nothing to report
+        Serial.printf("ROUND %lu done: rate=%s way=%s channels %u-%u\n",
+                      millis(), RATE_NAMES[r], WAY_NAMES[way], FIRST_CHANNEL,
+                      LAST_CHANNEL);
+      }
     }
   }
 }

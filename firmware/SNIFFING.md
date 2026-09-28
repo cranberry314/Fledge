@@ -115,9 +115,8 @@ returns to it.
    the motors once paired.
 2. Drone battery charged, 3 fresh AAAs in the remote.
 3. RadioCheck passes (`SETUP.md` step 4).
-4. The sniffer recording, started before the coach, so every step's
-   packets are captured. Both use the Mac's clock. For the control
-   session, set the sniffer's channels to 65 to 65.
+4. The ESP32 running `Sniffer` plugged in, with its channels set to 65
+   to 65 for a control session. The coach records it by itself.
 
 The motors will probably spin during some steps (left stick forward,
 button 5). With props off that is expected: carry on. Button 7, pressed
@@ -125,13 +124,15 @@ once, stops them at any time.
 
 ## Running a session
 
-`coach/coach.py` reads out each step with a countdown, like this, and
-logs exactly when each step started and ended:
+`coach/coach.py` reads out each step with a countdown, like this. At
+the same time it records everything the sniffer hears, and after each
+step it says whether the remote's signal changed:
 
     Right stick ⬆️ full forward, for 5 seconds, in
     5 4 3 2 1 (one per line)
     Go!
     5 4 3 2 1
+    ✅ The remote's signal changed      (or ❌ No change seen)
     Let go ✋
     3 2 1
 
@@ -140,11 +141,20 @@ Run it in a terminal, in `firmware/coach/`:
     python3 coach.py pairing.txt      # first, about 2.5 minutes
     python3 coach.py controls.txt     # then, about 7 (5 with --quick)
 
-Add `--say` to hear each line read aloud too, or `--quick` for short
-countdowns (2 seconds to get ready, 1 second between steps). Press **r** if a step went
-wrong (wrong button, stick slipped): it is marked bad in the log and done
-again. Press **q** to stop. Logs go in `firmware/captures/`, which git
-ignores.
+Before step 1 it listens for 5 seconds and says whether it can hear the
+remote; if the sniffer isn't plugged in it doesn't start. Add `--say` to
+hear each line read aloud too, `--quick` for short countdowns (2 seconds
+to get ready, 1 second between steps), or `--no-sniffer` to run the
+countdown alone. Press **r** if a step went wrong, or showed ❌: it is
+marked bad in the log and done again. Press **q** to stop.
+
+"Changed" means a packet arrived at least 3 times during the step that
+never arrived in the countdown just before it. The coach doesn't know
+which byte means what; that's for the paper table afterwards.
+
+Two logs go in `firmware/captures/`, which git ignores: the steps (.csv,
+with a remote_changed column) and everything the sniffer printed
+(-sniffer.log), both timed by the Mac's clock.
 
 The steps are in `pairing.txt` and `controls.txt`: one per line, the
 number of seconds, then what to do. Change them there, not here.
