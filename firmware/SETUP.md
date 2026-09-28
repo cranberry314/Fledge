@@ -111,3 +111,12 @@ The scan only hears that a channel is busy. It does not read packets.
 
 Busy channels do not prove the remote's chip is nRF24-compatible: any
 2.4 GHz radio shows up here. Reading its packets is the next step.
+
+**Result (drone off, remote on, sticks untouched):** channels **16 and 17**
+(2416-2417 MHz), with a little spill onto 14-15. They were quiet in 68
+scan lines before, busy in 11-13 of the 14 lines while the remote was on,
+and quiet again once it was switched off. Channels 41, 46, 47 and 71 got
+a few faint hits while it was on: possibly hopping, possibly noise.
+With the drone off, the remote is probably still trying to pair, so the
+channels may change once the drone is on. Scan that next: props off,
+throttle stick down.
