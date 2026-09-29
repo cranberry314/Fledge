@@ -87,14 +87,17 @@ class StandIn: NSObject, CBPeripheralManagerDelegate {
 }
 
 func describe(_ message: [UInt8]) -> String {
-    guard message.count == 5, message[0] == 1 else {
+    guard message.count == 8, message[0] == 2 else {
         let hex = message.map { String(format: "%02X", $0) }.joined(separator: " ")
         return "❓ unexpected message: \(hex)"
     }
     func value(_ i: Int) -> String {
         String(format: "%4d", Int(Int8(bitPattern: message[i])))
     }
+    let speed = message[5] & 1 != 0 ? "fast" : "slow"
+    let lights = message[5] & 2 != 0 ? "on" : "off"
     return "forward \(value(1))   right \(value(2))   turn \(value(3))   up \(value(4))"
+        + "   speed \(speed)   lights \(lights)   command \(message[6]) (count \(message[7]))"
 }
 
 func say(_ text: String) {

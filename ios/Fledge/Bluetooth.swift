@@ -23,14 +23,20 @@ class Relay: NSObject {
     }
 
     // Sends one controls message. Does nothing until the relay is connected.
-    func send(_ flight: Flight) {
+    func send(_ flight: Flight, _ buttons: Buttons) {
         guard let relay, let controls, relay.canSendWriteWithoutResponse else { return }
+        var switches: UInt8 = 0
+        if buttons.fast { switches += 1 }
+        if buttons.lights { switches += 2 }
         let message: [UInt8] = [
-            1,  // version
+            2,  // version
             byte(flight.forward),
             byte(flight.right),
             byte(flight.turn),
             byte(flight.up),
+            switches,
+            buttons.command.rawValue,
+            buttons.count,
         ]
         relay.writeValue(Data(message), for: controls, type: .withoutResponse)
     }

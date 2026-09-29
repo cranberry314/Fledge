@@ -18,6 +18,9 @@ struct Flight {
     var turn = 0.0
     var up = 0.0
 
+    // Staying still: every value 0.
+    init() {}
+
     // facing: where we think the drone faces. target: where the finger
     // touched the ring. Both in degrees: 0 = the start, 90 = right.
     // slider: the up/down slider, -100 to 100.
@@ -45,9 +48,9 @@ private func speed(tip: Double) -> Double {
 }
 
 // Turn at full speed toward the finger, slowing down over the last 30
-// degrees so the drone doesn't overshoot. Within 2 degrees: stop.
+// degrees so the drone doesn't overshoot. Within turnDeadZone: stop.
 private func turnSpeed(toGo: Double) -> Double {
-    if abs(toGo) < 2 {
+    if abs(toGo) < turnDeadZone {
         return 0
     }
     let percent = min(abs(toGo) / 30 * 100, 100)

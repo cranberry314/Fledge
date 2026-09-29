@@ -66,6 +66,7 @@ class Motion {
     // phone is held right now.
     func zeroLevel() {
         startHeading = heading
+        turn = 0  // now, not at the next sensor reading
         holdForward = tiltForward
         holdRight = tiltRight
         holdHeight = height

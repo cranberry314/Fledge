@@ -21,6 +21,9 @@ let phoneLiftMax = 30.0
 // 🎚️ the colour of the up/down slider
 let upSliderColor = Color.teal
 
+// 🎯 close enough: the drone stops turning this many degrees from where it should face
+let turnDeadZone = 5.0
+
 // 🪜 the ring jumps in steps this big, in degrees (0 = no jumps)
 let ringStep = 90.0
 
@@ -32,6 +35,12 @@ let ringDrone = "🛸"
 
 // 🚀 how fast the propellers can go (0 to 100)
 let maxThrottle = 80
+
+// ✈️ the colour of the Fly switch while flying
+let flyColor = Color.green
+
+// 🤸 after pressing flip, tip the phone this far (in degrees) to flip that way
+let flipTip = 25.0
 
 // 🎨 the colour of the flip button
 let flipButtonColor = Color.purple
