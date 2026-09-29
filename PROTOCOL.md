@@ -32,5 +32,5 @@ Each one means "how far to push that stick", as a percentage.
 
 ## If the messages stop
 
-If the relay gets no message for 500 ms, it acts as if every value were
-0. A lost link must never leave the drone flying on the last command.
+If the phone disconnects, or the relay gets no message for 500 ms, it
+acts as if every value were 0. A lost link must never leave the drone flying on the last command.

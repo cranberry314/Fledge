@@ -4,7 +4,11 @@ The ESP32 code goes here, in Arduino C++. It receives commands from the
 iPhone over Bluetooth and sends them to the drone through the nRF24L01+
 radio.
 
-The relay is not written yet. For now:
+- `Relay/`: the relay. So far only the Bluetooth side: it receives the
+  phone's controls (see `PROTOCOL.md` at the top of the repo) and prints
+  them on the Serial Monitor at 115200 baud. Nothing goes to the drone.
+
+Bench tools:
 
 - `SETUP.md`: setting up the bench, from a new Mac to a working radio.
 - `RadioCheck/`: checks the nRF24 wiring and scans for radio activity.
