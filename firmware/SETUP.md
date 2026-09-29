@@ -35,16 +35,19 @@ the board but the Mac never sees it). A new port such as
 
 Use female-to-male jumper wires; the nRF24's 2x4 pins don't fit a breadboard.
 
-| nRF24 | ESP32 |
-|-------|-------|
-| GND   | GND |
-| VCC   | 3V3 (never 5V or VIN) |
-| CE    | GPIO 4 |
-| CSN   | GPIO 5 |
-| SCK   | GPIO 18 |
-| MOSI  | GPIO 23 |
-| MISO  | GPIO 19 |
-| IRQ   | not connected |
+| nRF24 | Wire   | ESP32 |
+|-------|--------|-------|
+| GND   | black  | GND (− rail) |
+| VCC   | red    | 3V3 (+ rail; never 5V or VIN) |
+| CE    | yellow | GPIO 4 (j26) |
+| CSN   | orange | GPIO 5 (j23) |
+| SCK   | green  | GPIO 18 (j22) |
+| MOSI  | blue   | GPIO 23 (j16) |
+| MISO  | purple | GPIO 19 (j21) |
+| IRQ   | none   | not connected |
+
+The ESP32's own two jumpers to the rails: **red** from j30 (3V3) to +,
+**black** from j29 (GND) to −.
 
 Put a 10 µF capacitor across VCC and GND, close to the nRF24. If it has a
 stripe, that leg goes to GND.
@@ -62,8 +65,30 @@ only (row j). Every pin the radio needs is on the `3V3 GND D15 … D23` row.
 - Radio: VCC to + and GND to − near the capacitor, CE to j26, CSN to j23,
   SCK to j22, MISO to j21, MOSI to j16.
 
+![Wiring diagram: the nRF24L01+ radio on seven jumper wires to the ESP32 on a half-size breadboard](wiring.svg)
+
+Seen from above, the radio chip side up with its antenna on the left. Its
+pins stick out of the back, where left and right are swapped, so keep it
+chip side up and push each wire on from behind. **GND is the pin with its
+own printed box.** Use the colours in the table and the drawing: this
+exact layout was built and worked first time, and matching colours make
+each wire easy to trace from pin to hole.
+
 Leave the kit's breadboard power supply module off: the ESP32 already
 powers the rails, and the module can put 5 V on them.
+
+**Check before plugging in USB.** The red and black wires are the ones
+that can destroy the radio:
+
+- Radio VCC goes to the 3V3 rail: not 5V, not VIN.
+- Black on the radio's boxed pin (GND), red on the pin beside it (VCC).
+- The ESP32's 3V3 pin feeds the + rail, not its 5V or VIN pin, and
+  nothing is in the VIN column.
+- Capacitor stripe on the − rail: a backwards electrolytic capacitor can
+  pop.
+- Each signal wire is in row j of the right column: one column off puts a
+  signal on the wrong pin.
+- The radio isn't lying on anything metal, and no bare wire ends touch.
 
 ## 4. Check the radio with RadioCheck ✅
 
