@@ -1,6 +1,6 @@
 # Setting up the sniffer bench
 
-Steps to get from a new Mac to an ESP32 + nRF24L01+ that can listen to the
+Steps to get from a new Mac to an ESP32 & nRF24L01+ that can listen to the
 drone's remote. Tick each one off as it works.
 
 ## 1. Install the Arduino software ✅
