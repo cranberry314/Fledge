@@ -1,9 +1,10 @@
-# Setting up the sniffer bench
+# Setting up the Arduino tools and the radio
 
-Steps to get from a new Mac to an ESP32 & nRF24L01+ that can listen to the
-drone's remote. Tick each one off as it works.
+From a new Mac to an ESP32 and nRF24L01+ radio that work: install the
+Arduino software, check each board, wire the radio, check it. Steps 1-2
+are all the relay needs today; steps 3-5 are for the radio.
 
-## 1. Install the Arduino software ✅
+## 1. Install the Arduino software
 
     brew install --cask arduino-ide     # the app, with Serial Monitor and Plotter
     brew install arduino-cli            # the same thing from the command line
@@ -23,7 +24,7 @@ fails with "bad CPU type in executable" until Rosetta is installed:
 
     softwareupdate --install-rosetta --agree-to-license
 
-## 2. Check each ESP32 talks to the Mac ✅
+## 2. Check each ESP32 talks to the Mac
 
 Plug it in with a USB-C cable that carries data (charge-only cables light
 the board but the Mac never sees it). A new port such as
@@ -31,66 +32,12 @@ the board but the Mac never sees it). A new port such as
 
     ls /dev/cu.*
 
-## 3. Wire the nRF24L01+ to the ESP32 ✅
+## 3. Wire the nRF24L01+ to the ESP32
 
-Use female-to-male jumper wires; the nRF24's 2x4 pins don't fit a breadboard.
+Follow **[Wiring the radio](../README.md#wiring-the-radio)** in the main README: the drawing, the colour of every wire,
+and the checks to do before plugging in USB.
 
-| nRF24 | Wire   | ESP32 |
-|-------|--------|-------|
-| GND   | black  | GND (− rail) |
-| VCC   | red    | 3V3 (+ rail; never 5V or VIN) |
-| CE    | yellow | GPIO 4 (j26) |
-| CSN   | orange | GPIO 5 (j23) |
-| SCK   | green  | GPIO 18 (j22) |
-| MOSI  | blue   | GPIO 23 (j16) |
-| MISO  | purple | GPIO 19 (j21) |
-| IRQ   | none   | not connected |
-
-The ESP32's own two jumpers to the rails: **red** from j30 (3V3) to +,
-**black** from j29 (GND) to −.
-
-Put a 10 µF capacitor across VCC and GND, close to the nRF24. If it has a
-stripe, that leg goes to GND.
-
-### Exact layout: 30-pin ESP32 on a half-size (30-column) breadboard
-
-This board is 1 inch wide, so it leaves one free hole per pin on one side
-only (row j). Every pin the radio needs is on the `3V3 GND D15 … D23` row.
-
-- ESP32 label side up, USB to the right, its `D23 … 3V3` row in row i,
-  columns 16-30 (D23 in i16, 3V3 in i30). The other row lands in row a.
-- j30 (3V3) to the top + rail (the rail row next to row j).
-- j29 (GND) to the top − rail (the outer row, blue line).
-- 10 µF capacitor across the top rails near column 5, stripe on −.
-- Radio: VCC to + and GND to − near the capacitor, CE to j26, CSN to j23,
-  SCK to j22, MISO to j21, MOSI to j16.
-
-![Wiring diagram: the nRF24L01+ radio on seven jumper wires to the ESP32 on a half-size breadboard](wiring.svg)
-
-Seen from above, the radio chip side up with its antenna on the left. Its
-pins stick out of the back, where left and right are swapped, so keep it
-chip side up and push each wire on from behind. **GND is the pin with its
-own printed box.** Use the colours in the table and the drawing: this
-exact layout was built and worked first time, and matching colours make
-each wire easy to trace from pin to hole.
-
-Leave the kit's breadboard power supply module off: the ESP32 already
-powers the rails, and the module can put 5 V on them.
-
-**Check before plugging in USB.** The red and black wires are the ones
-that can destroy the radio:
-
-- Radio VCC goes to the 3V3 rail: not 5V, not VIN.
-- Black on the radio's boxed pin (GND), red on the pin beside it (VCC).
-- The ESP32's 3V3 pin feeds the + rail, not its 5V or VIN pin, and
-  nothing is in the VIN column.
-- Capacitor stripe on the − rail: a backwards electrolytic capacitor can
-  pop.
-- Each signal wire is in row j of the right column: one column off puts a
-  signal on the wrong pin.
-- The radio isn't lying on anything metal, and no bare wire ends touch.
-
-## 4. Check the radio with RadioCheck ✅
+## 4. Check the radio with RadioCheck
 
 `firmware/RadioCheck/RadioCheck.ino` checks the wiring, then scans every
 channel for radio activity. Run it at the start of each bench session: it
@@ -155,4 +102,4 @@ channels. After that the remote looked no different from the remote being
 off. It had paired: the motors ran when the throttle went up. So the
 remote was transmitting the whole time, and this scan could not see it.
 The sniffer later showed why: once paired it uses channels 60-66, right
-under the Wi-Fi block. Reading the packets is in `SNIFFING.md`.
+under the Wi-Fi block. Reading the packets is in [SNIFFING.md](SNIFFING.md).
