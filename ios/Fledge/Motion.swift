@@ -22,6 +22,11 @@ class Motion {
     // + to the right (clockwise), - to the left.
     var turn = 0.0
 
+    // How the phone was tipped when "Start here" was pressed: the way it
+    // is held when the drone should stay still. Flat until then.
+    private(set) var holdForward = 0.0
+    private(set) var holdRight = 0.0
+
     private let manager = CMMotionManager()
     private var startHeading: Double?
 
@@ -39,9 +44,12 @@ class Motion {
         manager.stopDeviceMotionUpdates()
     }
 
-    // Count turning from the way the phone points now.
+    // From now on, measure turning and tipping from the way the phone
+    // is held right now.
     func startHere() {
         startHeading = heading
+        holdForward = tiltForward
+        holdRight = tiltRight
     }
 
     private func update(_ data: CMDeviceMotion) {

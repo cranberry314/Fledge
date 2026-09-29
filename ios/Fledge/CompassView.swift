@@ -34,13 +34,7 @@ struct CompassView: View {
             Text("Pointing \(Int(motion.heading))° \(directionName(motion.heading))")
                 .font(.headline)
 
-            HStack {
-                Text(turnText(motion.turn))
-                Button("Start here") {
-                    motion.startHere()
-                }
-                .buttonStyle(.bordered)
-            }
+            Text(turnText(motion.turn))
         }
     }
 
