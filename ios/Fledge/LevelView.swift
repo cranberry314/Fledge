@@ -2,6 +2,8 @@ import SwiftUI
 
 // A bubble level: the bubble floats to the high side of the phone, like
 // the bubble in a builder's level, and turns green when the phone is level.
+// "Level" means held the way it was when "Zero Level" was pressed (flat
+// until then), so the bubble shows exactly what the drone is told.
 struct LevelView: View {
     var motion: Motion
 
@@ -9,13 +11,15 @@ struct LevelView: View {
     let bubbleSize = 36.0
 
     var body: some View {
-        // Level when both tilts are inside the dead zone from Tuning.swift.
-        let level = abs(motion.tiltRight) < tiltDeadZone
-            && abs(motion.tiltForward) < tiltDeadZone
+        let tipRight = motion.tiltRight - motion.holdRight
+        let tipForward = motion.tiltForward - motion.holdForward
+
+        // Level when both tips are inside the dead zone from Tuning.swift.
+        let level = abs(tipRight) < tiltDeadZone && abs(tipForward) < tiltDeadZone
 
         // 45 degrees of tip moves the bubble to the edge (at sensitivity 1).
-        var x = -motion.tiltRight / 45 * tiltSensitivity
-        var y = motion.tiltForward / 45 * tiltSensitivity
+        var x = -tipRight / 45 * tiltSensitivity
+        var y = tipForward / 45 * tiltSensitivity
         let distance = (x * x + y * y).squareRoot()
         if distance > 1 {  // keep the bubble inside the circle
             x /= distance
@@ -37,7 +41,7 @@ struct LevelView: View {
             }
             .frame(width: size, height: size)
 
-            Text(level ? "Level! ✅" : "Tip: \(Int(motion.tiltRight))° right, \(Int(motion.tiltForward))° forward")
+            Text(level ? "Level! ✅" : "Tip: \(Int(tipRight))° right, \(Int(tipForward))° forward")
                 .font(.headline)
         }
     }

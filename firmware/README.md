@@ -14,5 +14,9 @@ The relay is not written yet. For now:
   runs.
 - `coach/`: a terminal program that counts you through each step of a
   session, and the step lists it reads.
+- `StandIn/`: runs on the Mac and pretends to be the relay, so the
+  phone app's Bluetooth can be tested without an ESP32:
+  `swift firmware/StandIn/StandIn.swift`. The messages are described
+  in `PROTOCOL.md` at the top of the repo.
 - `captures/` (not in git): the raw logs of every bench run, with an
   `INDEX.md` saying what each one was.

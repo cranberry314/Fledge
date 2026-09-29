@@ -2,7 +2,7 @@ import SwiftUI
 
 // A compass: the dial turns so N always points north, and the bird above
 // it points the way the phone points. Below it: how far the phone has
-// turned since "Start here". That turn is what will turn the drone.
+// turned since "Zero Level".
 struct CompassView: View {
     var motion: Motion
 
