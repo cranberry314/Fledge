@@ -20,12 +20,8 @@ struct ContentView: View {
     // The up/down slider: -100 (down) to 100 (up).
     @State private var slider = 0.0
 
-    // Flipping: press 🤸, then tip the phone the way to flip. Afterwards
-    // the drone stays still until the phone is level again, so it doesn't
-    // fly off in the direction of the flip.
-    @State private var flipReady = false
-    @State private var flipReadyAt = Date()
-    @State private var levelAfterFlip = false
+    // What the flip button just did, shown for 2 seconds.
+    @State private var flipMessage: String?
 
     var body: some View {
         let raised = motion.height - motion.holdHeight
@@ -59,16 +55,12 @@ struct ContentView: View {
                 VStack(spacing: 12) {
                     TurnRing(target: $target, facing: facing)
 
-                    Button {
-                        flipReady.toggle()
-                        flipReadyAt = Date()
-                    } label: {
+                    Button(action: flip) {
                         Text(flipButtonEmoji)
                             .font(.system(size: 40))
                             .rotationEffect(.degrees(spins))
                             .frame(width: 80, height: 80)
-                            .background(flipButtonColor.opacity(flipReady ? 1 : 0.6), in: Circle())
-                            .overlay(Circle().stroke(.primary, lineWidth: flipReady ? 4 : 0))
+                            .background(flipButtonColor.opacity(flying ? 1 : 0.4), in: Circle())
                     }
                     .buttonStyle(.plain)
                     .disabled(!flying)
@@ -78,10 +70,9 @@ struct ContentView: View {
         .onAppear { motion.start() }
         .onDisappear { motion.stop() }
         .task {
-            // 20 times a second: check for a flip, tell the relay what to
-            // do, and move our guess of which way the drone faces.
+            // 20 times a second: tell the relay what to do, and move our
+            // guess of which way the drone faces.
             while !Task.isCancelled {
-                checkFlip()
                 let flight = flight()
                 relay.send(flight, buttons)
                 facing += flight.turn / 100 * droneTurnSpeed / 20
@@ -92,7 +83,7 @@ struct ContentView: View {
 
     // What the drone should do right now.
     func flight() -> Flight {
-        if !flying || flipReady || levelAfterFlip {
+        if !flying {
             return Flight()  // stay still
         }
         return Flight(from: motion, facing: facing, target: target, slider: slider)
@@ -101,9 +92,7 @@ struct ContentView: View {
     // A message instead of the flight words, when there is one.
     func note() -> String? {
         if !flying { return "✋ stopped" }
-        if flipReady { return "🤸 tip the phone to flip!" }
-        if levelAfterFlip { return "🤸 now hold the phone level" }
-        return nil
+        return flipMessage
     }
 
     func zeroLevel() {
@@ -118,45 +107,32 @@ struct ContentView: View {
             zeroLevel()
         }
         flying.toggle()
-        flipReady = false
     }
 
     func motorsOff() {
         buttons.give(.motorsOff)
         flying = false
-        flipReady = false
     }
 
-    func checkFlip() {
-        let tipForward = motion.tiltForward - motion.holdForward
-        let tipRight = motion.tiltRight - motion.holdRight
-
-        if levelAfterFlip {
-            if abs(tipForward) < tiltDeadZone && abs(tipRight) < tiltDeadZone {
-                levelAfterFlip = false
-            }
-            return
-        }
-        if !flipReady {
-            return
-        }
-        if Date().timeIntervalSince(flipReadyAt) > 5 {
-            flipReady = false  // waited too long: no flip
-            return
-        }
-        if max(abs(tipForward), abs(tipRight)) < flipTip {
-            return
-        }
-
-        // Flip the way the phone is tipped most.
-        if abs(tipForward) >= abs(tipRight) {
-            buttons.give(tipForward > 0 ? .flipForward : .flipBack)
+    // 🤸 Flip the way the drone is flying: the way the phone is tipped
+    // most. If it isn't tipped, flip forward.
+    func flip() {
+        let flight = flight()
+        var way = ""
+        if abs(flight.right) > abs(flight.forward) {
+            buttons.give(flight.right > 0 ? .flipRight : .flipLeft)
+            way = flight.right > 0 ? "right ➡️" : "left ⬅️"
         } else {
-            buttons.give(tipRight > 0 ? .flipRight : .flipLeft)
+            buttons.give(flight.forward < 0 ? .flipBack : .flipForward)
+            way = flight.forward < 0 ? "back ⬇️" : "forward ⬆️"
         }
-        flipReady = false
-        levelAfterFlip = true
         withAnimation(.spring(duration: 0.6)) { spins += 360 }
+
+        flipMessage = "🤸 flipping \(way)!"
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            flipMessage = nil
+        }
     }
 }
 

@@ -39,9 +39,6 @@ let maxThrottle = 80
 // ✈️ the colour of the Fly switch while flying
 let flyColor = Color.green
 
-// 🤸 after pressing flip, tip the phone this far (in degrees) to flip that way
-let flipTip = 25.0
-
 // 🎨 the colour of the flip button
 let flipButtonColor = Color.purple
 
