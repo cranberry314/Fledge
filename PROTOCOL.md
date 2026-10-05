@@ -48,7 +48,7 @@ sets the count: nothing happens.
 | 0       | none yet                                     |
 | 1       | take off or land (the oval button)           |
 | 2       | motors off: emergency stop, the drone falls   |
-| 3       | level calibration (only sent while stopped)  |
+| 3       | the drone's level calibration (only sent while stopped) |
 | 4       | flip forward                                 |
 | 5       | flip back                                    |
 | 6       | flip left                                    |

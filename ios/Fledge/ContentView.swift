@@ -156,19 +156,29 @@ struct ButtonBar: View {
             }
 
             // Take off / land.
-            Button("🛫") { buttons.give(.takeOffOrLand) }
+            Button { buttons.give(.takeOffOrLand) } label: {
+                Labeled(emoji: "🛫", words: "Take off\nor land")
+            }
 
             // Lights on / off.
-            Button("💡") { buttons.lights.toggle() }
-                .opacity(buttons.lights ? 1 : 0.3)
+            Button { buttons.lights.toggle() } label: {
+                Labeled(emoji: "💡", words: buttons.lights ? "Lights on" : "Lights off")
+            }
+            .opacity(buttons.lights ? 1 : 0.3)
 
             // Slow / fast.
-            Button(buttons.fast ? "🐇" : "🐢") { buttons.fast.toggle() }
+            Button { buttons.fast.toggle() } label: {
+                Labeled(emoji: buttons.fast ? "🐇" : "🐢", words: buttons.fast ? "Fast" : "Slow")
+            }
 
-            // Level calibration: only on the ground, so only while stopped.
-            Button("📐") { buttons.give(.calibrate) }
-                .disabled(flying)
-                .opacity(flying ? 0.3 : 1)
+            // The drone's level calibration (not the phone's: that is
+            // "Zero Level"). The drone must sit flat on the ground, so
+            // this only works while stopped.
+            Button { buttons.give(.calibrate) } label: {
+                Labeled(emoji: "📐", words: "Calibrate\ndrone")
+            }
+            .disabled(flying)
+            .opacity(flying ? 0.3 : 1)
 
             Text(status)
                 .font(.caption)
@@ -187,6 +197,21 @@ struct ButtonBar: View {
         .buttonStyle(.plain)
         .font(.title2)
         .padding(.horizontal)
+    }
+}
+
+// A picture with a word or two under it, so you know what it does.
+struct Labeled: View {
+    var emoji: String
+    var words: String
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(emoji)
+            Text(words)
+                .font(.caption2)
+                .multilineTextAlignment(.center)
+        }
     }
 }
 

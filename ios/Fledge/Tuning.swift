@@ -34,6 +34,7 @@ let ringColor = Color.blue
 let ringDrone = "🛸"
 
 // 🚀 how fast the propellers can go (0 to 100)
+// 🚧 not working yet: changing this does nothing (to be fixed)
 let maxThrottle = 80
 
 // ✈️ the colour of the Fly switch while flying
