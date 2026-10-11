@@ -47,7 +47,9 @@ How the remote's radio was worked out. You need the radio wired up
 - `RadioCheck/`: checks the radio's wiring and scans for radio activity.
   Run it at the start of every bench session.
 - `Sniffer/`: listens for the remote's packets without knowing its
-  address, and reports the ones that repeat.
+  address, and reports the ones that repeat. Its optional protocol capture
+  mode records packets from the binding and known control channels; see
+  [SNIFFING.md](SNIFFING.md#recording-the-binding-and-hop-channels).
 - [SNIFFING.md](SNIFFING.md): names for every control, and how a
   sniffing session runs.
 - `coach/`: a terminal program that counts you through each step of a

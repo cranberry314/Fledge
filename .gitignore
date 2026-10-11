@@ -24,6 +24,8 @@ CLAUDE.local.md
 
 # Sniffing session recordings and coach logs
 firmware/captures/
+firmware/Relay/LocalRadioId.h
+firmware/Relay/LocalPairTestPacket.h
 
 # Python bytecode
 __pycache__/

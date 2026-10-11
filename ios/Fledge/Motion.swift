@@ -77,10 +77,12 @@ class Motion {
         tiltRight = degrees(asin(min(max(-gravity.y, -1), 1)))
         tiltForward = degrees(asin(min(max(gravity.x, -1), 1)))
 
-        // The sensors say how far the phone has turned from "the phone's
-        // right edge points north", counting anticlockwise. Held sideways,
-        // that edge is the screen's far edge, the way we point.
-        heading = wrapTo360(-degrees(data.attitude.yaw))
+        // Held sideways, the phone's right edge is the screen's far edge,
+        // the way we point. m11 and m12 say where that edge points, seen
+        // from above (north and west parts), so tipping the phone doesn't
+        // change the heading. Counted anticlockwise, so turn it round.
+        let m = data.attitude.rotationMatrix
+        heading = wrapTo360(-degrees(atan2(m.m12, m.m11)))
 
         if startHeading == nil {
             startHeading = heading

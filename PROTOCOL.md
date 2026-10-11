@@ -53,6 +53,7 @@ sets the count: nothing happens.
 | 5       | flip back                                    |
 | 6       | flip left                                    |
 | 7       | flip right                                   |
+| 8       | pair                                         |
 
 ## If the messages stop
 

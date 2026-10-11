@@ -1,0 +1,7 @@
+# Pairing capture for coach.py. See firmware/SNIFFING.md.
+# Before starting: props off, remote off, drone off.
+
+Switch the drone on. Its light blinks slowly
+Switch the remote on with the power switch
+Left stick ⬆️ full forward (beep), then left stick ⬇️ full back (beep)
+Rest: hands off. Both lights should stay on

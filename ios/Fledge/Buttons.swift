@@ -14,6 +14,7 @@ enum Command: UInt8 {
     case flipBack = 5
     case flipLeft = 6
     case flipRight = 7
+    case pair = 8
 }
 
 @Observable

@@ -12,6 +12,10 @@
 //   SUM  after each listen that heard something: how many packets, and
 //        which ones repeated
 //   ROUND  after every channel has been tried once
+//
+// For a recorded protocol session, set CAPTURE_PROTOCOL to true. It rapidly
+// checks the pairing and known control channels, buffers packets, then prints
+// them with microsecond timestamps. It only listens; it never transmits.
 
 #include <SPI.h>
 #include <RF24.h>
@@ -22,8 +26,18 @@ RF24 radio(4, 5);  // CE = GPIO 4, CSN = GPIO 5 (see firmware/SETUP.md)
 // The remote pairs on 16-17; once paired it uses 60, 63 and 65.
 // 0 to 125: search everywhere. 65 to 65: a control session (channel 65
 // also hears the remote's channel 63 packets).
-const uint8_t FIRST_CHANNEL = 65;
-const uint8_t LAST_CHANNEL = 65;
+const uint8_t FIRST_CHANNEL = 16;
+const uint8_t LAST_CHANNEL = 17;
+
+// Set true to record packets while rapidly checking the known pairing and
+// control channels. Leave false for the normal sniffer above.
+const bool CAPTURE_PROTOCOL = true;
+const uint8_t CAPTURE_CHANNELS[] = {16, 17};
+const uint32_t CAPTURE_DWELL_US = 10000;
+const uint32_t CAPTURE_FLUSH_US = 500000;
+const int CAPTURE_BUFFER_SIZE = 128;
+const int CAPTURE_FLUSH_AT = 64;
+const int CAPTURE_BYTES = 23;  // address, payload and checksum
 
 // false: listen only the way the remote talks, XN297 at 1 Mbps.
 // true: also try the other data rates and the plain nRF24 way (slower).
@@ -61,6 +75,17 @@ uint8_t kinds[MAX_KINDS][SAME_BYTES];
 int kindCounts[MAX_KINDS];
 int kindsSeen = 0;
 
+struct CapturedPacket {
+  uint32_t atUs;
+  uint8_t channel;
+  uint8_t bytes[CAPTURE_BYTES];
+};
+
+CapturedPacket captureBuffer[CAPTURE_BUFFER_SIZE];
+int capturedPackets = 0;
+uint32_t droppedPackets = 0;
+uint32_t lastCaptureFlushAt = 0;
+
 void setup() {
   Serial.begin(115200);
   delay(1500);
@@ -70,13 +95,47 @@ void setup() {
     Serial.println("Radio not found: check the wiring with RadioCheck.");
     while (true) delay(1000);
   }
+  setUpRadio();
+
+  if (CAPTURE_PROTOCOL) {
+    lastCaptureFlushAt = micros();
+    Serial.println("Pairing capture: channels 16 and 17; receive only");
+  }
+}
+
+// The settings the sniffer needs. A radio that loses power for a moment
+// forgets them and goes back to checking packets itself, which throws
+// away every packet the remote sends, so checkRadio() puts them back.
+void setUpRadio() {
   radio.setAutoAck(false);     // don't answer anything we hear
   radio.disableCRC();          // keep packets even if their check fails
   radio.setPayloadSize(32);    // always read the longest packet
   radio.disableDynamicPayloads();
+
+  if (CAPTURE_PROTOCOL) {
+    radio.setDataRate(RF24_1MBPS);
+    radio.setAddressWidth(3);
+    radio.openReadingPipe(0, xn297Start);
+    radio.closeReadingPipe(1);
+  }
+}
+
+// If the radio has reset (its own packet check is back on), say so and set
+// it up again. Then check the wiring: a power wire is probably loose.
+void checkRadio() {
+  if (radio.getCRCLength() == RF24_CRC_DISABLED) return;
+  Serial.printf("RADIO RESET at %lu ms: it lost power for a moment. "
+                "Setting it up again; check the red and black wires.\n", millis());
+  radio.begin();
+  setUpRadio();
 }
 
 void loop() {
+  if (CAPTURE_PROTOCOL) {
+    captureProtocol();
+    return;
+  }
+
   for (int way = XN297; way <= NRF24; way++) {
     for (int r = 0; r < 3; r++) {
       bool remotesWay = (way == XN297 && r == 0);  // XN297 at 1 Mbps
@@ -93,7 +152,70 @@ void loop() {
   }
 }
 
+void captureProtocol() {
+  checkRadio();
+  const int channelCount = sizeof(CAPTURE_CHANNELS) / sizeof(CAPTURE_CHANNELS[0]);
+
+  for (int i = 0; i < channelCount; i++) {
+    uint8_t channel = CAPTURE_CHANNELS[i];
+    radio.stopListening();
+    radio.flush_rx();
+    radio.setChannel(channel);
+    delayMicroseconds(150);
+    radio.startListening();
+
+    uint32_t startedAt = micros();
+    while ((uint32_t)(micros() - startedAt) < CAPTURE_DWELL_US) {
+      captureAvailablePackets(channel);
+    }
+    captureAvailablePackets(channel);
+    radio.stopListening();
+    radio.flush_rx();
+  }
+
+  uint32_t now = micros();
+  bool timeToFlush = (uint32_t)(now - lastCaptureFlushAt) >= CAPTURE_FLUSH_US;
+  if (capturedPackets >= CAPTURE_FLUSH_AT || droppedPackets > 0 ||
+      (capturedPackets > 0 && timeToFlush)) {
+    printCapturedPackets();
+  }
+}
+
+void captureAvailablePackets(uint8_t channel) {
+  while (radio.available()) {
+    uint8_t packet[32];
+    radio.read(packet, sizeof(packet));
+    if (capturedPackets < CAPTURE_BUFFER_SIZE) {
+      CapturedPacket &captured = captureBuffer[capturedPackets++];
+      captured.atUs = micros();
+      captured.channel = channel;
+      memcpy(captured.bytes, packet, CAPTURE_BYTES);
+    } else {
+      droppedPackets++;
+    }
+  }
+}
+
+void printCapturedPackets() {
+  for (int i = 0; i < capturedPackets; i++) {
+    CapturedPacket &captured = captureBuffer[i];
+    Serial.printf("PKT %lu ch=%u :", (unsigned long)captured.atUs,
+                  captured.channel);
+    printBytes(captured.bytes, CAPTURE_BYTES);
+    Serial.println();
+  }
+  capturedPackets = 0;
+  lastCaptureFlushAt = micros();
+
+  if (droppedPackets > 0) {
+    Serial.printf("DROPPED %lu packets: capture buffer filled\n",
+                  (unsigned long)droppedPackets);
+    droppedPackets = 0;
+  }
+}
+
 void listenOnce(uint8_t channel, int r, int way) {
+  checkRadio();
   radio.stopListening();
   radio.setChannel(channel);
   radio.setDataRate(RATES[r]);

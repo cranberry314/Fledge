@@ -49,11 +49,14 @@ private func speed(tip: Double) -> Double {
 
 // Turn at full speed toward the finger, slowing down over the last 30
 // degrees so the drone doesn't overshoot. Within turnDeadZone: stop.
+// The speed starts from 0 at turnDeadZone, so a small wobble of the
+// compass gives a tiny turn, not a sudden jump.
 private func turnSpeed(toGo: Double) -> Double {
-    if abs(toGo) < turnDeadZone {
+    let past = abs(toGo) - turnDeadZone
+    if past <= 0 {
         return 0
     }
-    let percent = min(abs(toGo) / 30 * 100, 100)
+    let percent = min(past / 30 * 100, 100)
     return toGo > 0 ? percent : -percent
 }
 

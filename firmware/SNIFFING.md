@@ -134,6 +134,7 @@ signal changed:
 
 Run it in a terminal, in `firmware/coach/`, with one of the step lists:
 
+    python3 coach.py pairing.txt      # just the binding sequence, 4 steps
     python3 coach.py sticks.txt       # every stick test, 26 steps
     python3 coach.py buttons.txt      # every button test, 20 steps
     python3 coach.py flips.txt        # a flip in each direction, 12 steps
@@ -177,6 +178,35 @@ is probably a counter or checksum, not a control. Then:
   right small round button, because they start and stop the motors.
 - **`flips.txt`**: a plain push to compare with, then a flip in each
   direction, then the top-right button on its own.
+
+## Recording the binding and hop channels
+
+The Sniffer sketch currently starts in focused pairing-capture mode. It
+only listens: it alternates between channels 16 and 17, spending 10 ms on
+each, and prints received packets in batches. It empties the radio's RX
+FIFO at each channel change so queued packets are not attributed to the
+wrong channel. Each `PKT` line has the receive time in microseconds, the
+channel, and the first 23 packet bytes. A `DROPPED` line means its buffer
+filled; repeat that capture. To return to the normal single-channel
+Sniffer, set `CAPTURE_PROTOCOL` to `false` and upload again.
+
+For a focused comparison, record one run with the remote on and the drone
+off, then another with the drone in pairing mode and the remote on. Start
+each log before switching on the remote, note whether the drone's lights
+stop blinking or the remote beeps, and stop the log after switching both
+off. Use a new log filename for every run.
+
+With the props off, start from drone and remote both off. In
+`firmware/coach/`, run `python3 coach.py buttons.txt` to capture binding
+and button traffic, then `python3 coach.py sticks.txt` for stick traffic.
+The coach saves its raw sniffer log in `firmware/captures/`, which is
+ignored by git. Its initial "not hearing" warning is expected before the
+remote is on and paired. Do not open the Serial Monitor at the same time;
+the coach reads the ESP32 serial port itself.
+
+These logs include the remote's radio ID. Keep them in `captures/` and
+do not commit or share them. After recording, set `CAPTURE_PROTOCOL`
+back to `false` to return to the normal Sniffer.
 
 ## Afterwards
 

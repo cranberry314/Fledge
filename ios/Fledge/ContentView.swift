@@ -155,6 +155,12 @@ struct ButtonBar: View {
                     .background(flying ? flyColor : Color.gray.opacity(0.3), in: Capsule())
             }
 
+            Button { buttons.give(.pair) } label: {
+                Labeled(emoji: "🔗", words: "Pair")
+            }
+            .disabled(flying)
+            .opacity(flying ? 0.3 : 1)
+
             // Take off / land.
             Button { buttons.give(.takeOffOrLand) } label: {
                 Labeled(emoji: "🛫", words: "Take off\nor land")
