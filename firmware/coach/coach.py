@@ -326,8 +326,7 @@ if len(sys.argv) != 2:
 # Read single key presses (r, q) without waiting for Enter. This only
 # works in a real terminal; elsewhere the keys are simply ignored.
 KEYS = sys.stdin.isatty()
-if KEYS:
-    saved_terminal = termios.tcgetattr(sys.stdin)
+saved_terminal = termios.tcgetattr(sys.stdin) if KEYS else []
 try:
     if KEYS:
         tty.setcbreak(sys.stdin)

@@ -1,0 +1,10 @@
+{
+    // The Python here is kept simple for beginners, without type
+    // annotations, so check for real mistakes only, not missing types.
+    "python.analysis.typeCheckingMode": "basic",
+
+    // Arduino sketches (.ino) are C++.
+    "files.associations": {
+        "*.ino": "cpp"
+    }
+}

@@ -29,3 +29,8 @@ firmware/Relay/LocalPairTestPacket.h
 
 # Python bytecode
 __pycache__/
+
+# Editor settings made on this Mac for the Arduino sketches (they hold
+# local paths): rebuild with arduino-cli --only-compilation-database
+.vscode/c_cpp_properties.json
+firmware/.build/
