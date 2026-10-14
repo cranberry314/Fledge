@@ -86,6 +86,18 @@ uint8_t stickValue(int percent, uint8_t negativeRange, uint8_t positiveRange) {
   return 0x80 + (uint8_t)((percent * positiveRange) / 100);
 }
 
+// The two check bytes. Add up byte 1 and bytes 4-12, plus 2: byte 13 is
+// the low 8 bits of the total, byte 3 holds the bits above that (as 06,
+// 0A or 0E). Fits every control packet recorded from the remote.
+void addCheckBytes(uint8_t data[DATA_SIZE]) {
+  uint16_t total = data[1] + 2;
+  for (uint8_t i = 4; i <= 12; i++) {
+    total += data[i];
+  }
+  data[13] = total & 0xFF;
+  data[3] = ((total >> 8) << 2) | 0x02;
+}
+
 // After the drone answers, the remote sends this on 16/17: the four hop
 // channels in bytes 4-7, byte 1 = 0x10, byte 12 = 0xA5. The drone's ID
 // (bytes 4-5 of its answer) goes in bytes 0 and 2.
@@ -96,17 +108,13 @@ void makeHopListPacket(const uint8_t radioId[ADDRESS_SIZE],
   data[0] = droneId[0];
   data[1] = 0x10;
   data[2] = droneId[1];
-  data[3] = 0x0A;
   memcpy(&data[4], hops, 4);
   data[10] = 0x40;
   data[11] = 0x3F;
   data[12] = 0xA5;
   data[14] = radioId[1];
   data[15] = radioId[2];
-  data[13] = data[1] + 2;
-  for (uint8_t i = 4; i <= 12; i++) {
-    data[13] += data[i];
-  }
+  addCheckBytes(data);
   encodePacket(data, packet);
 }
 
@@ -120,7 +128,6 @@ void makeControlPacket(const uint8_t radioId[ADDRESS_SIZE],
   data[0] = droneId[0];
   data[1] = channel;
   data[2] = droneId[1];
-  data[3] = (forward > 0 || right > 0 || turn > 0 || up > 0) ? 0x0E : 0x0A;
   data[4] = stickValue(up, 127, 127);
   uint8_t negativeRange = (switches & 0x01) ? 96 : 63;
   uint8_t positiveRange = (switches & 0x01) ? 96 : 65;
@@ -145,16 +152,9 @@ void makeControlPacket(const uint8_t radioId[ADDRESS_SIZE],
   } else if (command == 7) {
     data[7] = 0xFF;
   }
-  if (command != 0) {
-    data[3] = 0x0E;
-  }
-
   data[14] = radioId[1];
   data[15] = radioId[2];
-  data[13] = channel + 2;
-  for (uint8_t i = 4; i <= 12; i++) {
-    data[13] += data[i];
-  }
+  addCheckBytes(data);
 
   encodePacket(data, packet);
 }
