@@ -168,12 +168,15 @@ where the technical steps are.
   [SETUP.md, step 4](firmware/SETUP.md#4-check-the-radio-with-radiocheck).
   This layout worked first time when followed exactly. Then unplug the
   USB and take the wires out again.
-- **Kid:** wires it themselves from the diagram. With the colours fixed,
-  every wire is a matching game against the picture: find the yellow
-  wire in the drawing, see which radio pin and which hole it goes to,
-  and put the real yellow wire there. Help with the radio end (the pins
-  are small, and the radio is held chip side up) and read out the hole
-  letters and numbers if they can't yet.
+- **Grown-up, then:** push the seven wires onto the radio's pins. The
+  pins are small, close together and on the back of the board, where
+  left and right are swapped: this part is fiddly, so it's yours.
+- **Kid:** everything on the breadboard, from the diagram. With the
+  colours fixed, every wire is a matching game against the picture:
+  find the yellow wire in the drawing, see which hole it goes to, and
+  put the real yellow wire there. The same for the ESP32's two power
+  wires and the capacitor. Read out the hole letters and numbers if
+  they can't yet.
 - **Grown-up, before the USB goes in:** go through the
   [checklist](README.md#check-before-plugging-in-usb) yourself, above
   all the red and black wires: the radio needs 3.3 V, and 5 V would
