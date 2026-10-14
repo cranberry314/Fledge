@@ -22,6 +22,9 @@ drone. The drone itself is not modified.
 
 ## Build your own
 
+**Doing it with a kid?** Start with [GUIDE.md](GUIDE.md): the stages in
+order, and how to make each one theirs.
+
 1. **Buy the parts:** [below](#buying-the-parts).
 2. **Install the Arduino tools and check the ESP32:**
    [SETUP.md](firmware/SETUP.md), steps 1-2.
@@ -164,6 +167,7 @@ with a short note on what it does.
 
 | Path | What |
 |------|------|
+| [GUIDE.md](GUIDE.md) | Building it with a kid, stage by stage |
 | [ios/](ios/) | The iPhone app (Swift, SwiftUI) |
 | [ios/Fledge/Tuning.swift](ios/Fledge/Tuning.swift) | Every setting you might want to change |
 | [firmware/](firmware/README.md) | The ESP32 relay, and the bench tools used to decode the remote |
