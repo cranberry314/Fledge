@@ -18,7 +18,7 @@ let phoneLiftDeadZone = 20.0
 // 🪶 how fast lifting the phone can make the drone climb (0 to 100, 0 = off)
 let phoneLiftMax = 30.0
 
-// 🎚️ the colour of the up/down slider
+// 🎚️ the color of the up/down slider
 let upSliderColor = Color.teal
 
 // 🎯 close enough: the drone stops turning this many degrees from where it should face
@@ -27,7 +27,7 @@ let turnDeadZone = 5.0
 // 🪜 the ring jumps in steps this big, in degrees (0 = no jumps)
 let ringStep = 90.0
 
-// 🍩 the colour of the turning ring
+// 🍩 the color of the turning ring
 let ringColor = Color.blue
 
 // 🛸 the picture on the ring that shows which way the drone faces
@@ -37,22 +37,22 @@ let ringDrone = "🛸"
 // 🚧 not working yet: changing this does nothing (to be fixed)
 let maxThrottle = 80
 
-// ✈️ the colour of the Fly switch while flying
+// ✈️ the color of the Fly switch while flying
 let flyColor = Color.green
 
-// 🎨 the colour of the flip button
+// 🎨 the color of the flip button
 let flipButtonColor = Color.purple
 
 // 🤸 the picture on the flip button
 let flipButtonEmoji = "🤸"
 
-// 🫧 the colour of the bubble in the level
+// 🫧 the color of the bubble in the level
 let bubbleColor = Color.orange
 
-// ✅ the bubble's colour when the phone is level
+// ✅ the bubble's color when the phone is level
 let levelColor = Color.green
 
-// 🧭 the colour of the N on the compass
+// 🧭 the color of the N on the compass
 let northColor = Color.red
 
 // 🐣 the bird in the compass: it points the way you're facing

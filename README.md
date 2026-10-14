@@ -70,7 +70,7 @@ nRF24L01+ can read; see [SNIFFING.md](firmware/SNIFFING.md).
 
 One nRF24L01+ radio on seven jumper wires, a 30-pin ESP32 on a
 half-size breadboard, and a 10 µF capacitor. This exact layout, with
-these wire colours, was built and worked first time. Keep to the colours:
+these wire colors, was built and worked first time. Keep to the colors:
 they make every wire easy to trace from pin to hole.
 
 **Keep the USB cable unplugged while you wire.**
@@ -160,7 +160,7 @@ New files added to `ios/Fledge/` join the app automatically. Run
 ## Changing how Fledge flies
 
 Open [ios/Fledge/Tuning.swift](ios/Fledge/Tuning.swift), change a number,
-colour or emoji, then build and run again. One setting per line, each
+color or emoji, then build and run again. One setting per line, each
 with a short note on what it does.
 
 ## What's where

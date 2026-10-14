@@ -34,7 +34,7 @@ the board but the Mac never sees it). A new port such as
 
 ## 3. Wire the nRF24L01+ to the ESP32
 
-Follow **[Wiring the radio](../README.md#wiring-the-radio)** in the main README: the drawing, the colour of every wire,
+Follow **[Wiring the radio](../README.md#wiring-the-radio)** in the main README: the drawing, the color of every wire,
 and the checks to do before plugging in USB.
 
 ## 4. Check the radio with RadioCheck
