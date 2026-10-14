@@ -5,9 +5,9 @@ want to hack a toy drone together: find out what its remote
 says, then fly it from a Mac or an iPhone through a homemade relay. The
 drone itself is never opened or changed.
 
-The grown-up does the typing, anything fiddly, and anything that could
+The grown-up does the typing, anything tricky, and anything that could
 damage a part. The kid makes the real decisions: what to try next, which
-colour, which emoji, what order the moves go in, and what the numbers
+color, which emoji, what order the moves go in, and what the numbers
 should be. The hands-on jobs the kid does are ones the grown-up can
 watch and check one step at a time. Nothing here needs the kid to read
 yet.
@@ -48,7 +48,7 @@ plus some grown-up time beforehand.
   long hair back, and keep faces away while it's powered.
 - Fly indoors in a clear room, low, and know where the drone's power
   switch is. Full climb for two seconds reaches a normal ceiling.
-- **The relay's "lost controls" behaviour isn't tested in flight yet**
+- **The relay's "lost controls" behavior isn't tested in flight yet**
   (see [What isn't finished](#what-isnt-finished)). Until it is, the
   power switch is the stop button.
 - Wiring: everything runs on USB power at 3.3 V. The only parts that can
@@ -67,10 +67,10 @@ might hope, so treat them as advice, not rules.
 alone, so you find the problems before they do. Then put the code back
 the way it was, so they make the changes fresh:
 
-    git tag before-colours          # before you rehearse
+    git tag before-colors          # before you rehearse
     # ...rehearse, find the problems...
-    git tag rehearsed-colours       # the working result: a fallback
-    git checkout before-colours -- ios/Fledge/Tuning.swift   # reset for their turn
+    git tag rehearsed-colors       # the working result: a fallback
+    git checkout before-colors -- ios/Fledge/Tuning.swift   # reset for their turn
 
 If their run goes badly, swap in your rehearsed result quietly, then put
 their own choices back in by hand, so the result is still theirs. Keep
@@ -119,7 +119,7 @@ different number"), not what they are ("you're so clever").
 them out, exactly as said, including the silly results of a missed
 step. Then the flight plan is the same game, written down.
 
-**Make it theirs.** Their name for it, their emoji, their colours. Let
+**Make it theirs.** Their name for it, their emoji, their colors. Let
 them show someone else what they made, and explain it.
 
 **Later: a planted bug.** Once they know how something should behave,
@@ -138,7 +138,7 @@ where the technical steps are.
   [README.md, Building the iPhone app](README.md#building-the-iphone-app).
   A free Apple account works, but then the app stops opening after 7
   days and needs building again.
-- **Kid:** change colours and emoji in `ios/Fledge/Tuning.swift`, then
+- **Kid:** change colors and emoji in `ios/Fledge/Tuning.swift`, then
   build it onto the phone and see the change. To see changes without
   the phone, open `ContentView.swift`, show Xcode's Canvas (Editor →
   Canvas), pin the preview with the pin button, then go back to
@@ -166,11 +166,11 @@ where the technical steps are.
 
 - **Grown-up, first (the rehearsal):** wire it yourself, following the
   [wiring diagram](README.md#wiring-the-radio) exactly, **including
-  every wire colour**, and check it with RadioCheck:
+  every wire color**, and check it with RadioCheck:
   [SETUP.md, step 4](firmware/SETUP.md#4-check-the-radio-with-radiocheck).
   This layout worked first time when followed exactly. Then unplug the
   USB and take the wires out again.
-- **Grown-up, then: everything that carries power, and the fiddly
+- **Grown-up, then: everything that carries power, and the tricky
   part.** The USB stays unplugged until the very end.
   - Put the ESP32 in the breadboard.
   - Its red and black wires to the rails, the radio's red and black
@@ -308,7 +308,7 @@ Tested on the bench: pairing, take off, climbing, turning and landing,
 from a Mac program. Not yet tested:
 
 - **When the controls stop** (program ends, cable out, phone gone), the
-  relay centres the sticks and holds the throttle fully down, expecting
+  relay centers the sticks and holds the throttle fully down, expecting
   the drone to come down. That hasn't been tried in flight.
 - **The remote's stop button** sends nothing that the sniffer could see,
   so "motors off" in the app holds the throttle down instead.
