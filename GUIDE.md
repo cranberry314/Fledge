@@ -5,10 +5,12 @@ want to hack a toy drone together: find out what its remote
 says, then fly it from a Mac or an iPhone through a homemade relay. The
 drone itself is never opened or changed.
 
-The grown-up does the wiring, the typing and anything fiddly. The kid
-makes the real decisions: what to try next, which colour, which emoji,
-what order the moves go in, and what the numbers should be. Nothing here
-needs the kid to read yet.
+The grown-up does the typing, anything fiddly, and anything that could
+damage a part. The kid makes the real decisions: what to try next, which
+colour, which emoji, what order the moves go in, and what the numbers
+should be. The hands-on jobs the kid does are ones the grown-up can
+watch and check one step at a time. Nothing here needs the kid to read
+yet.
 
 The technical steps are in other files, linked from each stage below.
 This guide is the order to do them in, and how to make each one the
@@ -168,19 +170,29 @@ where the technical steps are.
   [SETUP.md, step 4](firmware/SETUP.md#4-check-the-radio-with-radiocheck).
   This layout worked first time when followed exactly. Then unplug the
   USB and take the wires out again.
-- **Grown-up, then:** push the seven wires onto the radio's pins. The
-  pins are small, close together and on the back of the board, where
-  left and right are swapped: this part is fiddly, so it's yours.
-- **Kid:** everything on the breadboard, from the diagram. With the
-  colours fixed, every wire is a matching game against the picture:
-  find the yellow wire in the drawing, see which hole it goes to, and
-  put the real yellow wire there. The same for the ESP32's two power
-  wires and the capacitor. Read out the hole letters and numbers if
-  they can't yet.
+- **Grown-up, then: everything that carries power, and the fiddly
+  part.** The USB stays unplugged until the very end.
+  - Put the ESP32 in the breadboard.
+  - Its red and black wires to the rails, the radio's red and black
+    wires, and the capacitor (it has a + and a − leg, and backwards it
+    can pop). A power wire in the wrong place can put 5 V on the radio,
+    which needs 3.3 V and would be ruined.
+  - Push the seven wires onto the radio's pins: they are small, close
+    together and on the back of the board, where left and right are
+    swapped.
+  - Put a strip of tape over the ESP32's **VIN** column (column 30 on
+    the row-a side): VIN carries 5 V from the USB, and the tape means no
+    wire can go there by mistake.
+- **Kid: the five signal wires** (yellow, orange, green, purple, blue),
+  **one at a time.** Each is a matching game against the picture: find
+  the yellow wire in the drawing, see which hole it goes to, and put the
+  real yellow wire there. Check each one together before the next.
+  These wires can't damage anything: one in the wrong hole just doesn't
+  work, and the check catches it. Read out the hole letters and numbers
+  if they can't yet.
 - **Grown-up, before the USB goes in:** go through the
   [checklist](README.md#check-before-plugging-in-usb) yourself, above
-  all the red and black wires: the radio needs 3.3 V, and 5 V would
-  ruin it.
+  all the red and black wires.
 
 ### 5. Sniffing: what does the remote say?
 
