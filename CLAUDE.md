@@ -28,12 +28,20 @@ and nothing about who uses the app. Personal context lives in
   other files, and don't add clever code to this one.
 - `ios/Signing.xcconfig` includes the gitignored `ios/Local.xcconfig`, which
   holds `DEVELOPMENT_TEAM`. Signing is Automatic.
-- `firmware/`: the ESP32 relay, in Arduino C++. Not written yet. It only
-  relays: bytes in over BLE, drone packets out over the nRF24. Settings
-  that change how the drone flies (sensitivity, speed) belong in
-  `Tuning.swift` on the phone, not here. For now it holds bench tools:
-  `RadioCheck/`, `Sniffer/` and `coach/` (Python), described in
-  `firmware/README.md`.
+- `firmware/Relay/`: the ESP32 relay, in Arduino C++. It only relays:
+  controls in (Bluetooth from the phone, or a text line over USB from
+  the Mac), drone packets out over the nRF24. One job per file; the list
+  is at the top of `Relay.ino`. Settings that change how the drone flies
+  (sensitivity, speed) belong in `Tuning.swift` on the phone or
+  `firmware/fly/tuning.py` on the Mac, not here.
+- `firmware/Relay/DronePackets.h` (which byte means what) and
+  `LocalRadioId.h` are kept out of the public repo on purpose: never push
+  them. The relay builds without them but can't talk to the drone.
+- `firmware/fly/`: fly the drone from the Mac in Python (`drone.py`),
+  with flight plans and keyboard flying. Its `tuning.py` follows the
+  same rules as `Tuning.swift`.
+- `firmware/` also holds bench tools: `RadioCheck/`, `Sniffer/` and
+  `coach/` (Python), described in `firmware/README.md`.
 - `firmware/captures/` is gitignored: raw logs of every bench run, which
   contain the remote's radio ID. Keep every run's log there, listed in
   its `INDEX.md`; never commit them.

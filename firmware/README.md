@@ -5,9 +5,11 @@ and check your board with [SETUP.md](SETUP.md) steps 1-2.
 
 ## The relay: `Relay/`
 
-Receives the phone's controls over Bluetooth, in the format described in
-[PROTOCOL.md](../PROTOCOL.md). So far it only prints them: nothing is sent to the
-drone yet. **It needs only the ESP32 on USB, no radio.**
+Takes controls from the phone (Bluetooth) or the Mac (the USB cable), in
+the format described in [PROTOCOL.md](../PROTOCOL.md), and flies the
+drone with them through the nRF24, pretending to be the drone's own
+remote. The radio must be wired as shown in the
+[main README](../README.md#wiring-the-radio).
 
 To put it on the board, in the Arduino IDE: open `Relay/Relay.ino`, pick
 **ESP32 Dev Module** and the `usbserial` port, and press Upload. Or from
@@ -16,16 +18,42 @@ the command line, in `firmware/`:
     arduino-cli compile --fqbn esp32:esp32:esp32 Relay
     arduino-cli upload --fqbn esp32:esp32:esp32 -p /dev/cu.usbserial-0001 Relay
 
-To test it, open the Serial Monitor at **115200** and open Fledge on the
-iPhone. You should see:
+Each file does one job; the list is at the top of `Relay.ino`. Two
+files are not in this repo: `LocalRadioId.h` (the pretend remote's ID)
+and `DronePackets.h` (what each byte of a drone packet means). Without
+them the relay still builds and takes controls, but says it can't talk
+to the drone.
 
-- The board's blue LED lights and `Phone connected` is printed. The app's
-  top bar says `🔗 relay connected`.
-- A line like `forward 20 right 0 turn 0 up 0` whenever the controls
-  change (tap ✈️ Fly first: while stopped the app sends only zeros).
-- A line for each button, e.g. `Command: take off or land`.
-- Close the app: `Phone disconnected`, then `No phone: everything back to
-  0`.
+**Pairing:** type `p` in the Serial Monitor (115200 baud), tap **Pair**
+in the app, or run a program in `fly/`; then switch the drone on within
+30 seconds. The relay prints `The drone answered`, then `Linked`, and
+stays linked until it is reset.
+
+**If the controls stop** for half a second (phone gone, Mac program
+ended, cable out), the relay centres the sticks and holds the throttle
+fully down. It never presses take-off/land by itself: that button is a
+toggle, so pressing it on the ground would take off. *Not yet tested in
+flight.* The app's 🛑 **Motors off** does the same for 3 seconds,
+because the drone's own motors-off signal hasn't been found.
+
+## Flying from the Mac: `fly/`
+
+Python programs that fly the drone through the relay on the USB cable
+(close any Serial Monitor first: only one program can use the port).
+Every run's log goes in `captures/`.
+
+    cd firmware/fly
+    python3 flight_plan.py      # does the moves in flight_plan.py
+    python3 fly_with_keys.py    # fly with the keyboard
+
+- `flight_plan.py`: a list of moves, one per line, e.g.
+  `drone.turn_right(180)`. Rearrange them and run it again.
+- `fly_with_keys.py`: each key press pushes for a moment. Space lands,
+  `q` lands and quits.
+- `tuning.py`: how hard each move pushes, how fast the drone turns, and
+  which key does what.
+- `drone.py`: the moves themselves. If a program ends while the drone is
+  flying, it lands first.
 
 ## Testing without an ESP32: `StandIn/`
 

@@ -53,10 +53,29 @@ sets the count: nothing happens.
 | 5       | flip back                                    |
 | 6       | flip left                                    |
 | 7       | flip right                                   |
-| 8       | pair                                         |
+| 8       | pair: start (or restart) 30 seconds of pairing |
+
+Pairing only starts when asked (command 8, or `p` over USB): switch the
+drone on within 30 seconds. Once the drone answers, the relay stays
+linked to it until the relay is reset.
+
+## Over the USB cable
+
+The Mac sends the same 8 numbers as one line of text, at the same rate,
+with bytes 1 to 4 written as signed numbers:
+
+    controls 2 0 0 100 0 2 1 5
+
+It can also send `p` (start pairing) or `hello`, which the relay answers
+with `Relay ready: linked` or `Relay ready: not paired`.
 
 ## If the messages stop
 
 If the phone disconnects, or the relay gets no message for 500 ms, it
-acts as if bytes 1 to 4 were 0. A lost link must never leave the drone
-flying on the last command.
+centres the sticks and holds the throttle fully down, so the drone comes
+down. A lost link must never leave the drone flying on the last command.
+(It never sends take off/land by itself: that is a toggle, and would
+take off a drone that is on the ground.)
+
+A sender that has been quiet for 500 ms starts afresh: its next message
+only sets the count, as after connecting.

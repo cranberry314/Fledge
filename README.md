@@ -14,20 +14,23 @@ drone. The drone itself is not modified.
   Bluetooth link from the app to the relay.
 - **Worked out:** how the drone's remote talks to it (see
   [SNIFFING.md](firmware/SNIFFING.md)).
-- **Not yet:** the relay sending to the drone. Today it receives the
-  phone's controls and prints them.
+- **Works on the bench:** the relay pairs with the drone and flies it:
+  take off, climb, turn and land, from a Mac program
+  ([firmware/README.md](firmware/README.md#flying-from-the-mac-fly)).
+- **Next:** flying from the phone through the relay, and testing what
+  the drone does when the controls stop.
 
 ## Build your own
 
 1. **Buy the parts:** [below](#buying-the-parts).
 2. **Install the Arduino tools and check the ESP32:**
    [SETUP.md](firmware/SETUP.md), steps 1-2.
-3. **Put the relay on the ESP32 and test it:**
-   [firmware/README.md](firmware/README.md#the-relay-relay). This needs
-   only the ESP32 on USB.
+3. **Put the relay firmware on the ESP32:**
+   [firmware/README.md](firmware/README.md#the-relay-relay).
 4. **Build the iPhone app:** [below](#building-the-iphone-app).
 5. **Wire the radio** (for talking to the drone, and for the bench
-   tools): [below](#wiring-the-radio).
+   tools), then test the relay with the props off:
+   [below](#wiring-the-radio).
 
 ## Buying the parts
 

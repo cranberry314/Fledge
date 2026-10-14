@@ -46,9 +46,15 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   - Weak packets 16 channels either side (44-49, 76-81) all fail the
     checksum: the nRF24 also hears strong signals 16 MHz away. They are
     not the drone talking back.
-- **Which byte is which control** has been worked out from the coach
-  sessions, and is kept out of this file on purpose, so the byte table
-  can be worked out fresh from the steps below.
+- The paired-channel capture shows bursts of five packets per channel,
+  about 30 ms apart, with payload byte 1 naming the next channel:
+  60 → 63 → 65 → 60. The bind capture shows packets alternating between
+  16 and 17, about 20 ms apart.
+- The stick fields, speed setting, binding payload and control checksum
+  have been derived from the coach captures. The relay uses these results;
+  physical binding and flight still need bench verification.
+- The XN297 framing was cross-checked against the
+  [DIY-Multiprotocol-TX-Module XN297 emulator](https://github.com/pascallanger/DIY-Multiprotocol-TX-Module).
 - **Not a protocol Multiprotocol already knows.** Its only protocol that
   pairs on `CC CC CC CC CC` is MT99xx, whose pairing payload is 9 bytes
   starting with `20`. So this one gets decoded here, step by step.
@@ -86,12 +92,15 @@ up in the manual.)
 
 | Name | Manual # | Manual's name | Press | Hold ~3 s |
 |------|----------|---------------|-------|-----------|
-| **top-left button** | 1 | High/low speed | change speed | ? |
-| **top-right button** 🤸 | 2 | One-key flips & rolls 360° | arm a flip; then push the right stick full in a direction | ? |
-| **oval button** | 5 | One-key ascend/landing | take off / land | trim (see below) |
-| **left small round button** | 6 | Light switch | lights (manual unclear) | lights off? |
-| **right small round button** 🛑 | 7 | Emergency stop / correction | **stop motors** | level calibration (remote beeps, drone lights flicker ~3 s) |
+| **top-left button** | 1 | High/low speed | switch between slow and fast | ? |
+| **top-right button** 🤸 | 2 | One-key flips & rolls 360° | arm a flip (the remote beeps); then push the right stick full in a direction and the drone flips that way | ? |
+| **oval button** | 5 | One-key ascend/landing | take off; press again to land | trim (see below) |
+| **left small round button** | 6 | Light switch | ? (manual unclear) | lights off? |
+| **right small round button** 🛑 | 7 | Emergency stop / correction | **stop motors** (manual) | level calibration (remote beeps, drone lights flicker ~3 s) |
 | **power switch** | 9 | Power switch | on / off | |
+
+What each one sends to the drone is left out of this file on purpose, so
+it can be worked out fresh with the steps below.
 
 **Trims** ("fine-tuning"): the manual says to long-press the oval button
 "and then" push the right stick in the direction to correct. It doesn't
