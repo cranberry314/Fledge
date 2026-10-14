@@ -1,9 +1,6 @@
 #include "DroneLink.h"
 
-#if __has_include("DronePackets.h") && __has_include("LocalRadioId.h")
 #include "DronePackets.h"
-#define CAN_TALK_TO_DRONE
-#endif
 
 // Pairing, as the remote does it: "pair with me" on 16 and 17 in turn.
 const uint8_t PAIRING_CHANNELS[2] = {16, 17};
@@ -34,26 +31,17 @@ bool DroneLink::begin() {
   radio.setPayloadSize(XN297::PACKET_SIZE);
   radio.stopListening();
 
-#ifdef CAN_TALK_TO_DRONE
   Serial.println("Radio ready.");
-#else
-  Serial.println("Radio ready, but DronePackets.h or LocalRadioId.h is "
-                 "missing: the relay can't talk to the drone.");
-#endif
   return true;
 }
 
 void DroneLink::startPairing() {
-#ifdef CAN_TALK_TO_DRONE
   if (!radioFound) {
     Serial.println("Can't pair: no radio.");
     return;
   }
   Serial.println("Pairing: switch the drone on now (30 seconds).");
   startStep(Step::Pairing);
-#else
-  Serial.println("Can't pair: DronePackets.h or LocalRadioId.h is missing.");
-#endif
 }
 
 void DroneLink::setRemote(const RemoteState &newRemote) {
@@ -72,7 +60,6 @@ void DroneLink::startStep(Step next) {
 }
 
 void DroneLink::update() {
-#ifdef CAN_TALK_TO_DRONE
   if (!radioFound || step == Step::Idle) return;
 
   if (step == Step::Pairing) {
@@ -115,7 +102,6 @@ void DroneLink::update() {
   }
 
   if (millis() - lastReportAt >= REPORT_EVERY_MS) reportNow();
-#endif
 }
 
 void DroneLink::sendPacket(uint8_t channel, const uint8_t payload[XN297::PAYLOAD_SIZE]) {
@@ -139,7 +125,6 @@ void DroneLink::listenForAnswer() {
 }
 
 void DroneLink::readAnswers() {
-#ifdef CAN_TALK_TO_DRONE
   while (radio.available()) {
     uint8_t packet[XN297::PACKET_SIZE];
     uint8_t payload[XN297::PAYLOAD_SIZE];
@@ -157,7 +142,6 @@ void DroneLink::readAnswers() {
     for (int i = 0; i < XN297::PAYLOAD_SIZE; i++) Serial.printf(" %02X", payload[i]);
     Serial.println();
   }
-#endif
 }
 
 void DroneLink::reportNow() {

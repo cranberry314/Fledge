@@ -1,22 +1,24 @@
 // DronePackets: what each of the 16 bytes means to the drone.
 //
-// 🔒 LOCAL ONLY: never push this file. It is the answer to the sniffing
-// activity (which byte is which stick), worked out from the coach
-// recordings of 2026-09-28. The relay builds without it; it just can't
-// talk to the drone.
-//
-// Every number here was measured from the real remote. Where something is
-// a guess, the comment says so.
+// Worked out with the Sniffer and coach sessions (SNIFFING.md); the same
+// table, written out with every action, is DroneActions.md. Every number
+// here was measured from the real remote (a FunPX SQN-053). Where
+// something is a guess, the comment says so. For a different drone, this
+// is the file to rewrite.
 
 #pragma once
 
 #include <Arduino.h>
 
-#include "LocalRadioId.h"  // our pretend remote's ID (also local only)
 #include "Remote.h"
 #include "XN297.h"
 
 namespace DronePackets {
+
+// Our pretend remote's ID: the ID of the real remote we sniffed. The drone
+// pairs with this one. Whether it would pair with any other 5 bytes
+// hasn't been tried.
+const uint8_t REMOTE_ID[5] = {0xAA, 0xE2, 0xBD, 0x5A, 0x40};
 
 // ---- The pairing request (the remote sends it on 16/17) ----
 //   byte 0      10 (a pairing packet)
@@ -93,14 +95,14 @@ inline void addCheckBytes(uint8_t payload[XN297::PAYLOAD_SIZE]) {
 inline void pairingRequest(uint8_t payload[XN297::PAYLOAD_SIZE]) {
   memset(payload, 0, XN297::PAYLOAD_SIZE);
   payload[0] = PAIRING;
-  memcpy(&payload[1], LOCAL_RADIO_ID, 5);
+  memcpy(&payload[1], REMOTE_ID, 5);
 }
 
 // True if `payload` is the drone answering our pairing request; then
 // `droneId` gets the drone's ID.
 inline bool readAnswer(const uint8_t payload[XN297::PAYLOAD_SIZE], uint8_t droneId[2]) {
   bool isAnswer = payload[0] == PAIRING && payload[1] == ANSWER &&
-                  payload[2] == LOCAL_RADIO_ID[1] && payload[3] == LOCAL_RADIO_ID[2];
+                  payload[2] == REMOTE_ID[1] && payload[3] == REMOTE_ID[2];
   if (isAnswer) {
     droneId[0] = payload[4];
     droneId[1] = payload[5];
@@ -113,8 +115,8 @@ inline void startPacket(const uint8_t droneId[2], uint8_t payload[XN297::PAYLOAD
   payload[DRONE_ID_A] = droneId[0];
   payload[DRONE_ID_B] = droneId[1];
   payload[ALWAYS_3F] = 0x3F;
-  payload[REMOTE_ID_A] = LOCAL_RADIO_ID[1];
-  payload[REMOTE_ID_B] = LOCAL_RADIO_ID[2];
+  payload[REMOTE_ID_A] = REMOTE_ID[1];
+  payload[REMOTE_ID_B] = REMOTE_ID[2];
 }
 
 inline void hopList(const uint8_t droneId[2], const uint8_t hops[4],

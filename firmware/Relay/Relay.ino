@@ -10,7 +10,7 @@
 //   Remote.h         our pretend remote's sticks and buttons
 //   DroneLink        the radio: pairing, then sending to the drone
 //   XN297            how the drone's radio chip wraps packets
-//   DronePackets.h   what each byte means (local only, never pushed)
+//   DronePackets.h   what each byte means (and DroneActions.md, as a table)
 //
 // To pair: type p in the Serial Monitor (115200 baud), tap Pair in the
 // app, or run firmware/fly/; then switch the drone on.

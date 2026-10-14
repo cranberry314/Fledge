@@ -18,11 +18,11 @@ the command line, in `firmware/`:
     arduino-cli compile --fqbn esp32:esp32:esp32 Relay
     arduino-cli upload --fqbn esp32:esp32:esp32 -p /dev/cu.usbserial-0001 Relay
 
-Each file does one job; the list is at the top of `Relay.ino`. Two
-files are not in this repo: `LocalRadioId.h` (the pretend remote's ID)
-and `DronePackets.h` (what each byte of a drone packet means). Without
-them the relay still builds and takes controls, but says it can't talk
-to the drone.
+Each file does one job; the list is at the top of `Relay.ino`.
+`DronePackets.h` holds what each byte of a drone packet means, for the
+FunPX SQN-053; [DroneActions.md](Relay/DroneActions.md) is the same, as a
+table. For a different drone, those are the files to redo (see
+[GUIDE.md](../GUIDE.md#a-different-drone)).
 
 **Pairing:** type `p` in the Serial Monitor (115200 baud), tap **Pair**
 in the app, or run a program in `fly/`; then switch the drone on within

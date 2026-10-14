@@ -35,8 +35,9 @@ and nothing about who uses the app. Personal context lives in
   (sensitivity, speed) belong in `Tuning.swift` on the phone or
   `firmware/fly/tuning.py` on the Mac, not here.
 - `firmware/Relay/DronePackets.h` (which byte means what) and
-  `LocalRadioId.h` are kept out of the public repo on purpose: never push
-  them. The relay builds without them but can't talk to the drone.
+  `DroneActions.md` (the same, as a table) are the answer key to the
+  sniffing activity. They are public, but `SNIFFING.md` stays
+  spoiler-free: don't copy byte meanings into it.
 - `firmware/fly/`: fly the drone from the Mac in Python (`drone.py`),
   with flight plans and keyboard flying. Its `tuning.py` follows the
   same rules as `Tuning.swift`.

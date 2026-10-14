@@ -7,8 +7,7 @@
 //   3. Linked: send the remote's sticks and buttons every 7.57 ms, hopping
 //      through the channels, for as long as the relay runs.
 //
-// It needs two local-only files, LocalRadioId.h and DronePackets.h. Without
-// them it builds, says so, and never sends anything.
+// What goes inside each packet is DronePackets.h's job.
 
 #pragma once
 

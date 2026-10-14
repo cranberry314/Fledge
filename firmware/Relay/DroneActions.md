@@ -1,13 +1,12 @@
 # Drone actions: what each control sends
 
-🔒 **LOCAL ONLY: never push this file.** The packets below hold the
-remote's full ID, and it is the answer to the sniffing activity, like
-`DronePackets.h` (which is the same table, as code). The public half,
-the controls by name and what they do, is in
+What the Sniffer found: every control on the FunPX SQN-053's remote and
+the packet it sends. `DronePackets.h` is the same table, as code. The
+controls by name, and how a sniffing session runs, are in
 [SNIFFING.md](../SNIFFING.md).
 
-For the activity, this is the Sniffer's output file: try a command on
-the remote, then find the row that changed.
+⚠️ **Spoiler** if you want to find these yourself: try a control on the
+remote, then find the row that changed.
 
 Byte numbers are payload bytes 0-15, after XN297 unwrapping. "While
 held" means the remote sends the value only as long as the control is

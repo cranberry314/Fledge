@@ -46,13 +46,13 @@ From the bench scans (`SETUP.md` step 5) and the drone's manual:
   - Weak packets 16 channels either side (44-49, 76-81) all fail the
     checksum: the nRF24 also hears strong signals 16 MHz away. They are
     not the drone talking back.
-- The paired-channel capture shows bursts of five packets per channel,
-  about 30 ms apart, with payload byte 1 naming the next channel:
-  60 → 63 → 65 → 60. The bind capture shows packets alternating between
-  16 and 17, about 20 ms apart.
-- The stick fields, speed setting, binding payload and control checksum
-  have been derived from the coach captures. The relay uses these results;
-  physical binding and flight still need bench verification.
+- **Timing** (protocol captures, 2026-10-11): while pairing, the remote
+  alternates channels 16 and 17. Once paired it sends one packet about
+  every 7.6 ms, on channels 63, 65, 65 and 60 in turn.
+- **What each byte means** was worked out in the coach sessions and is in
+  [Relay/DroneActions.md](Relay/DroneActions.md). That file is the answer
+  key: to find the bytes yourself, run the sessions below first. The
+  relay pairs and flies the drone with these results (tested 2026-10-14).
 - The XN297 framing was cross-checked against the
   [DIY-Multiprotocol-TX-Module XN297 emulator](https://github.com/pascallanger/DIY-Multiprotocol-TX-Module).
 - **Not a protocol Multiprotocol already knows.** Its only protocol that
@@ -100,7 +100,8 @@ up in the manual.)
 | **power switch** | 9 | Power switch | on / off | |
 
 What each one sends to the drone is left out of this file on purpose, so
-it can be worked out fresh with the steps below.
+it can be worked out fresh with the steps below. The answers are in
+[Relay/DroneActions.md](Relay/DroneActions.md): open it afterwards.
 
 **Trims** ("fine-tuning"): the manual says to long-press the oval button
 "and then" push the right stick in the direction to correct. It doesn't
