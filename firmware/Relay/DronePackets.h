@@ -59,23 +59,35 @@ const uint8_t OVAL_PRESSED = 0x0C;
 const uint8_t HOP_LIST = 0x10;
 const uint8_t HOP_LIST_MARK = 0xA5;
 
-// How far the sticks go. In slow mode the remote stops the sticks at
-// middle -63/+65 (41..C1), in fast mode at -96/+96 (20..E0). The
-// left stick's up/down always goes the whole way (01..FF).
-const int SLOW_DOWN = 63, SLOW_UP = 65;
-const int FAST_DOWN = 96, FAST_UP = 96;
-const int FULL = 127;
+// How far the sticks go, as an amount from the middle: 65 (41) in slow
+// mode, 96 (60) in fast mode, the same both ways. The throttle always goes
+// the whole way, 127.
+const int SLOW_RANGE = 65;
+const int FAST_RANGE = 96;
+const int THROTTLE_RANGE = 127;
 
-// A flip is the right stick pushed past its end: FF for forward and
-// right, 7F for back and left, for about 0.2 s.
+// A flip is the right stick pushed past its end (amount 127): FF for
+// forward and right, 7F for back and left, for about 0.2 s. So 7F must
+// never be sent for an ordinary push.
 const uint8_t FLIP_FORWARD_OR_RIGHT = 0xFF;
 const uint8_t FLIP_BACK_OR_LEFT = 0x7F;
 
-// A stick at -100..100 as the byte the remote sends.
-inline uint8_t stickByte(int percent, int downRange, int upRange) {
+// The throttle (left stick up/down): 80 in the middle, plus or minus the
+// amount. Recorded sweep down: 80 64 42 14 01.
+inline uint8_t throttleByte(int percent) {
   percent = constrain(percent, -100, 100);
-  if (percent < 0) return 0x80 - (-percent * downRange) / 100;
-  return 0x80 + (percent * upRange) / 100;
+  return 0x80 + (percent * THROTTLE_RANGE) / 100;
+}
+
+// The other sticks (spin, forward, sideways): forward / right is 80 plus
+// the amount; back / left is the amount alone, counting up from 00.
+// Recorded sweeps: back 80 0E 17 1D 39 4A 5A 60, left 80 03 08 15 30 45 60.
+inline uint8_t stickByte(int percent, int range) {
+  percent = constrain(percent, -100, 100);
+  uint8_t amount = (abs(percent) * range) / 100;
+  if (amount == 0) return 0x80;  // the middle
+  if (percent < 0) return amount;
+  return 0x80 + amount;
 }
 
 // The two check bytes. Add up byte 1 and bytes 4-12, plus 2: CHECK_LOW is
@@ -134,12 +146,11 @@ inline void controls(const uint8_t droneId[2], uint8_t nextChannel,
   startPacket(droneId, payload);
   payload[NEXT_CHANNEL] = nextChannel;
 
-  int down = remote.fast ? FAST_DOWN : SLOW_DOWN;
-  int up = remote.fast ? FAST_UP : SLOW_UP;
-  payload[LEFT_STICK_UP] = stickByte(remote.leftStickUp, FULL, FULL);
-  payload[LEFT_STICK_RIGHT] = stickByte(remote.leftStickRight, down, up);
-  payload[RIGHT_STICK_UP] = stickByte(remote.rightStickUp, down, up);
-  payload[RIGHT_STICK_RIGHT] = stickByte(remote.rightStickRight, down, up);
+  int range = remote.fast ? FAST_RANGE : SLOW_RANGE;
+  payload[LEFT_STICK_UP] = throttleByte(remote.leftStickUp);
+  payload[LEFT_STICK_RIGHT] = stickByte(remote.leftStickRight, range);
+  payload[RIGHT_STICK_UP] = stickByte(remote.rightStickUp, range);
+  payload[RIGHT_STICK_RIGHT] = stickByte(remote.rightStickRight, range);
 
   if (remote.flip == Flip::Forward) payload[RIGHT_STICK_UP] = FLIP_FORWARD_OR_RIGHT;
   if (remote.flip == Flip::Back) payload[RIGHT_STICK_UP] = FLIP_BACK_OR_LEFT;

@@ -15,17 +15,24 @@ sessions 142445, 150146, 152100, 153940) unless it says otherwise.
 
 ## Sticks
 
-They spring back to the middle (`80`). In slow mode the remote stops
-them at `41`-`C1`, in fast mode at `20`-`E0`; the left stick's up/down
-always goes the whole way, `01`-`FF`. Values in between are
-proportional.
+They spring back to the middle (`80`).
+
+- **Throttle** (left stick up/down): `80` plus or minus how far it is
+  pushed, all the way to `01` (full down) and `FF` (full up).
+- **The other three** (spin, forward, sideways): forward / right is `80`
+  plus how far; back / left is **how far on its own, counting up from
+  `00`**. Full is `41` in slow mode and `60` in fast mode, both ways:
+  slow full right `C1`, slow full left `41`. Recorded sweep back:
+  `80 0E 17 1D 39 4A 5A 60`.
+- Values from `61` to `7F` never come from an ordinary push: `7F` is a
+  flip back or left.
 
 | Control | Does | App / Mac sends | Byte | Values |
 |---|---|---|---|---|
 | left stick up/down | climb / sink; middle = hold height | `up` -100..100 | 4 | `01` full down, `80` middle, `FF` full up |
-| left stick left/right | spin on the spot | `turn` | 5 | `41` full left, `C1` full right (slow) |
-| right stick up/down | fly forward / back | `forward` | 6 | `C1` full forward, `41` full back (slow) |
-| right stick left/right | fly sideways | `right` | 7 | `41` full left, `C1` full right (slow) |
+| left stick left/right | spin on the spot | `turn` | 5 | `41` full left, `C1` full right (slow); half left `20` |
+| right stick up/down | fly forward / back | `forward` | 6 | `C1` full forward, `41` full back (slow); half back `20` |
+| right stick left/right | fly sideways | `right` | 7 | `41` full left, `C1` full right (slow); half left `20` |
 
 ## Buttons
 
@@ -82,11 +89,11 @@ take_off       = [BD 41 70 0A 80 80 80 80 00 00 40 3F 0C CE E2 BD]   # while the
 land           = [BD 41 70 0A 80 80 80 80 00 00 40 3F 0C CE E2 BD]   # the same packet: the oval is a toggle
 up             = [BD 41 70 0E FF 80 80 80 00 00 40 3F 00 41 E2 BD]   # half: BF
 down           = [BD 41 70 0A 01 80 80 80 00 00 40 3F 00 43 E2 BD]   # half: 41
-turn_left      = [BD 41 70 0A 80 41 80 80 00 00 40 3F 00 83 E2 BD]   # half: 61
+turn_left      = [BD 41 70 0A 80 41 80 80 00 00 40 3F 00 83 E2 BD]   # half: 20
 turn_right     = [BD 41 70 0E 80 C1 80 80 00 00 40 3F 00 03 E2 BD]   # half: A0
 forward        = [BD 41 70 0E 80 80 C1 80 00 00 40 3F 00 03 E2 BD]   # half: A0
-back           = [BD 41 70 0A 80 80 41 80 00 00 40 3F 00 83 E2 BD]   # half: 61
-tilt_left      = [BD 41 70 0A 80 80 80 41 00 00 40 3F 00 83 E2 BD]   # half: 61
+back           = [BD 41 70 0A 80 80 41 80 00 00 40 3F 00 83 E2 BD]   # half: 20
+tilt_left      = [BD 41 70 0A 80 80 80 41 00 00 40 3F 00 83 E2 BD]   # half: 20
 tilt_right     = [BD 41 70 0E 80 80 80 C1 00 00 40 3F 00 03 E2 BD]   # half: A0
 fast_mode      = [BD 41 70 0A 80 80 80 80 00 00 40 3F 01 C3 E2 BD]   # and the sticks go further: 20..E0
 lights_off     = [BD 41 70 0A 80 80 80 80 00 00 00 3F 00 82 E2 BD]
