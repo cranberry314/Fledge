@@ -174,3 +174,9 @@ with a short note on what it does.
 | [firmware/SETUP.md](firmware/SETUP.md) | Arduino tools, checking the boards and the radio |
 | [firmware/SNIFFING.md](firmware/SNIFFING.md) | How the remote's radio was worked out |
 | [PROTOCOL.md](PROTOCOL.md) | The messages the app sends the relay |
+
+## License
+
+MIT: see [LICENSE](LICENSE). The relay firmware uses the
+[RF24](https://github.com/nRF24/RF24) library, which is GPLv2, so a
+compiled relay that includes it falls under the GPLv2.
