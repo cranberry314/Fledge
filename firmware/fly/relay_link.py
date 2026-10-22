@@ -64,12 +64,15 @@ class RelayLink:
         self._log("#", text)
 
     def wait_for(self, words, seconds):
-        """Wait until the relay prints a line containing `words`. Returns
-        that line, or None if `seconds` pass first."""
+        """Wait until the relay prints a line containing `words` (or any
+        of them, if `words` is a list). Returns that line, or None if
+        `seconds` pass first."""
+        if isinstance(words, str):
+            words = [words]
         start = time.monotonic()
         while time.monotonic() - start < seconds:
             for at, text in list(self.lines):
-                if at >= start and words in text:
+                if at >= start and any(w in text for w in words):
                     return text
             time.sleep(0.05)
         return None

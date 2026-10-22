@@ -39,6 +39,7 @@ PAIR = 8
 
 SEND_EVERY = 0.05  # seconds: 20 messages a second, like the phone
 PAIRING_SECONDS = 35  # the relay tries for 30 s
+CALIBRATE_SECONDS = 2  # the relay sends calibrate for 0.6 s; give the drone time to finish
 
 CAPTURES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "captures")
 
@@ -124,17 +125,26 @@ class Drone:
     # ---- Pairing, taking off, landing ----
 
     def pair(self):
+        # Always pair again, even if the relay says it's linked: the relay
+        # can't tell when the drone was switched off. A drone that is
+        # already on answers in under a second.
         self.connect()
-        self.link.send("hello")
-        if self.link.wait_for("Relay ready: linked", 1):
-            print("🔗 Already paired.")
-            return
         self.give(PAIR)
         print("🔗 Pairing: switch the drone on now!")
-        if self.link.wait_for("Linked:", PAIRING_SECONDS):
-            print("✅ Paired! The drone is listening.")
-        else:
+        answer = self.link.wait_for(["Linked: the drone is listening", "Can't pair"],
+                                    PAIRING_SECONDS)
+        if answer is None:
             raise SystemExit("😕 The drone didn't answer. Switch it off, run me, then switch it on.")
+        if "Can't pair" in answer:
+            raise SystemExit("📻 The relay can't find its radio. Press the relay's EN button, then run me again.")
+        print("✅ Paired! The drone is listening.")
+
+    def calibrate(self):
+        if self.flying:
+            print("   📐 Only on the ground: land() first.")
+            return
+        self.give(CALIBRATE)
+        time.sleep(CALIBRATE_SECONDS)
 
     def take_off(self):
         if self.flying:
@@ -173,6 +183,12 @@ the_drone = Drone()
 def pair():
     """🔗 Pair with the drone: run this, then switch the drone on."""
     the_drone.pair()
+
+
+def calibrate():
+    """📐 Teach the drone what level is: on flat ground, before take_off()."""
+    print("📐 Calibrating: keep the drone still on flat ground.")
+    the_drone.calibrate()
 
 
 def take_off():
