@@ -9,7 +9,7 @@ The grown-up does the typing, anything tricky, and anything that could
 damage a part. The kid makes the real decisions: what to try next, which
 color, which emoji, what order the moves go in, and what the numbers
 should be. The hands-on jobs the kid does are ones the grown-up can
-watch and check one step at a time. Nothing here needs the kid to read
+watch and easily check one step at a time. Nothing here needs the kid to read
 yet.
 
 The technical steps are in other files, linked from each stage below.
