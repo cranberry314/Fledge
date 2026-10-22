@@ -11,10 +11,12 @@
 #   drone.left(1)          ⬅️ seconds   drone.right(1)         ➡️ seconds
 #   drone.turn_left(90)    ↪️ degrees   drone.turn_right(90)   ↩️ degrees
 #   drone.flip_forward()   🤸          drone.wait(1)          ⏸️ seconds
+#   drone.calibrate()      📐 on flat ground, before take_off
 
 import drone
 
 drone.pair()           # 🔗 then switch the drone on
+drone.calibrate()      # 📐 flat ground first
 drone.take_off()       # 🛫
 drone.turn_right(180)  # ↩️ half a turn
 drone.land()           # 🛬
