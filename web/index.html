@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fledge Code</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🐣 Fledge Code</h1>
+    <p>Write a program for the drone and press <b>Fly</b>. Or type one command at a time under the drone.</p>
+  </header>
+
+  <main>
+    <section class="program">
+      <div class="program-top">
+        <h2>📝 My program</h2>
+        <select id="examples" aria-label="Examples">
+          <option value="">📚 Examples…</option>
+        </select>
+      </div>
+      <div class="editor">
+        <div id="line-numbers" aria-hidden="true"></div>
+        <textarea id="program" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off" aria-label="My program"></textarea>
+      </div>
+      <div class="buttons">
+        <button id="fly">▶️ Fly</button>
+        <button id="stop" class="stop">✋ Stop</button>
+      </div>
+    </section>
+
+    <section class="drone">
+      <h2>👀 The drone</h2>
+      <div class="relay">
+        <button id="connect" class="small">📡 Connect</button>
+        <button id="pair" class="small" disabled>🔗 Pair</button>
+        <span id="relay-status">Only on screen: no drone connected.</span>
+      </div>
+      <canvas id="preview" aria-label="The drone seen from above, and how high it is"></canvas>
+      <p id="doing"></p>
+      <div id="messages" aria-live="polite"></div>
+      <label class="command-line">
+        <span>fly&gt;</span>
+        <input id="command" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="type a command, like take_off(), and press Enter">
+      </label>
+    </section>
+  </main>
+
+  <section class="card">
+    <h2>🃏 All the commands</h2>
+    <table>
+      <tr><td><code>take_off()</code></td><td>🛫 Take off and hover</td></tr>
+      <tr><td><code>land()</code></td><td>🛬 Come down and stop</td></tr>
+      <tr><td><code>up(1)</code> <code>down(1)</code></td><td>⬆️⬇️ Go up or down for 1 second</td></tr>
+      <tr><td><code>forward(1)</code> <code>back(1)</code></td><td>⏩⏪ Fly forward or back for 1 second</td></tr>
+      <tr><td><code>left(1)</code> <code>right(1)</code></td><td>⬅️➡️ Slide sideways for 1 second</td></tr>
+      <tr><td><code>rotate(90)</code></td><td>🔄 Spin right a quarter turn. <code>rotate(-90)</code> spins left, <code>rotate(360)</code> all the way round.</td></tr>
+      <tr><td><code>wait(1)</code></td><td>⏸️ Hover still for 1 second</td></tr>
+      <tr><td><code>repeat 4:</code></td><td>🔁 Do the lines under it 4 times. Put 4 spaces in front of each one.</td></tr>
+      <tr><td><code># a note</code></td><td>💬 After a # is a note for people. The drone skips it.</td></tr>
+    </table>
+
+    <h3>📏 The rules</h3>
+    <ul>
+      <li>⏱️ A program lasts <span data-setting="longestFlight"></span> seconds at most. Then the drone lands by itself.</li>
+      <li>📦 The drone stays within <span data-setting="farthestAway"></span> seconds of flying from where it took off: ahead, behind, left and right. <b>Ahead</b> is the way it faces at the start.</li>
+      <li>⬆️ It goes at most <span data-setting="highest"></span> seconds of <code>up()</code> above where it hovers.</li>
+      <li>✅ The program is checked before the drone takes off, so a mistake never stops it in the air.</li>
+    </ul>
+  </section>
+
+  <script src="settings.js"></script>
+  <script src="examples.js"></script>
+  <script src="language.js"></script>
+  <script src="checker.js"></script>
+  <script src="preview.js"></script>
+  <script src="bluetooth.js"></script>
+  <script src="page.js"></script>
+</body>
+</html>

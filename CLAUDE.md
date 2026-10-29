@@ -46,6 +46,12 @@ and nothing about who uses the app. Personal context lives in
 - `firmware/captures/` is gitignored: raw logs of every bench run, which
   contain the remote's radio ID. Keep every run's log there, listed in
   its `INDEX.md`; never commit them.
+- `web/`: Fledge Code, a Python-like language for young kids that runs
+  in a browser (Chromebooks included). Plain JavaScript, no build step,
+  one job per file. Its `settings.js` follows the same rules as
+  `Tuning.swift`. The checker enforces the flight limits before the
+  drone takes off; keep the language free of randomness and sensors so
+  every program can be checked in full.
 - A separate ESP32 running MicroPython is a beginner playground (LEDs,
   buzzer), not part of the relay. Keep it out of `firmware/`. Where its
   code lives is undecided; ask first.

@@ -17,6 +17,10 @@ drone. The drone itself is not modified.
 - **Works on the bench:** the relay pairs with the drone and flies it:
   take off, climb, turn and land, from a Mac program
   ([firmware/README.md](firmware/README.md#flying-from-the-mac-fly)).
+- **Works:** Fledge Code, a Python-like language for young kids that
+  runs in Chrome (Chromebooks too), checks each program's limits before
+  take-off and flies the drone over Bluetooth
+  ([web/README.md](web/README.md)).
 - **Next:** flying from the phone through the relay, and testing what
   the drone does when the controls stop.
 

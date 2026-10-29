@@ -1,0 +1,307 @@
+:root {
+  --paper: #fbf8f1;
+  --panel: #ffffff;
+  --ink: #1f2430;
+  --muted: #6b7280;
+  --line: #e2ddd2;
+  --grid: #eeeae1;
+  --edge: #e0892b;
+  --drone: #2463c9;
+  --trail: #7fa7e8;
+  --shadow: rgba(0, 0, 0, 0.12);
+  --problem: #b42318;
+  --problem-paper: #fdecea;
+  --note: #6b4e00;
+  --note-paper: #fff4d6;
+  --go: #1f8a4c;
+  --stop: #c2410c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #16181d;
+    --panel: #1f2229;
+    --ink: #eceef2;
+    --muted: #9aa1ad;
+    --line: #333844;
+    --grid: #2a2e37;
+    --edge: #f0a04b;
+    --drone: #6ea0f5;
+    --trail: #3d5f9c;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --problem: #ff8a7a;
+    --problem-paper: #3a1d1a;
+    --note: #f3d27a;
+    --note-paper: #332a12;
+    --go: #34b36b;
+    --stop: #e0682b;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #16181d;
+  --panel: #1f2229;
+  --ink: #eceef2;
+  --muted: #9aa1ad;
+  --line: #333844;
+  --grid: #2a2e37;
+  --edge: #f0a04b;
+  --drone: #6ea0f5;
+  --trail: #3d5f9c;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --problem: #ff8a7a;
+  --problem-paper: #3a1d1a;
+  --note: #f3d27a;
+  --note-paper: #332a12;
+  --go: #34b36b;
+  --stop: #e0682b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.45 system-ui, sans-serif;
+}
+
+header,
+main,
+.card {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+header p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 860px) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* The program, with line numbers beside it. */
+
+.program-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.program-top h2 {
+  margin: 0;
+}
+
+#examples {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: 16px system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.editor {
+  display: flex;
+  height: 420px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  font: 20px/1.5 ui-monospace, "Cascadia Mono", "Roboto Mono", monospace;
+}
+
+#line-numbers {
+  padding: 10px 8px;
+  min-width: 3em;
+  text-align: right;
+  color: var(--muted);
+  background: var(--paper);
+  overflow: hidden;
+  user-select: none;
+}
+
+#line-numbers .problem {
+  color: var(--panel);
+  background: var(--problem);
+  border-radius: 4px;
+}
+
+#program {
+  flex: 1;
+  padding: 10px;
+  border: 0;
+  outline: none;
+  resize: none;
+  font: inherit;
+  white-space: pre;
+  overflow: auto;
+  color: var(--ink);
+  background: var(--panel);
+  tab-size: 4;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  font: bold 20px system-ui, sans-serif;
+  color: #fff;
+  background: var(--go);
+  cursor: pointer;
+}
+
+button.stop {
+  background: var(--stop);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* The drone. */
+
+.relay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 10px;
+  color: var(--muted);
+}
+
+button.small {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 16px;
+  background: var(--drone);
+}
+
+#preview {
+  display: block;
+  width: 100%;
+  height: 340px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+#doing {
+  min-height: 1.5em;
+  margin: 8px 0 0;
+  font: 18px ui-monospace, "Cascadia Mono", "Roboto Mono", monospace;
+}
+
+#messages p {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+#messages .problem {
+  color: var(--problem);
+  background: var(--problem-paper);
+}
+
+#messages .note {
+  color: var(--note);
+  background: var(--note-paper);
+}
+
+#messages .typed {
+  padding: 0;
+  color: var(--muted);
+  font-family: ui-monospace, "Cascadia Mono", "Roboto Mono", monospace;
+}
+
+.command-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font: 20px ui-monospace, "Cascadia Mono", "Roboto Mono", monospace;
+}
+
+.command-line input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* The card of commands. */
+
+.card {
+  margin-top: 16px;
+}
+
+.card table {
+  border-collapse: collapse;
+}
+
+.card td {
+  padding: 6px 12px 6px 0;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.card h3 {
+  margin: 18px 0 6px;
+}
+
+.card ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.card li {
+  margin: 4px 0;
+}
+
+code {
+  font: 0.95em ui-monospace, "Cascadia Mono", "Roboto Mono", monospace;
+  white-space: nowrap;
+}
