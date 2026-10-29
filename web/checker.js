@@ -62,6 +62,11 @@ function flyCommand(command, flight, round) {
     return;
   }
 
+  if (command.name === "calibrate") {
+    if (state.flying) throw new Problem(command.line, `${round}calibrate() only works on the ground. Put it before take_off()`);
+    takeStep(flight, command, calibrateTime, () => {});
+    return;
+  }
   if (command.name === "take_off") {
     if (state.flying) throw new Problem(command.line, `${round}The drone is already flying.`);
     takeStep(flight, command, takeOffTime, () => { state.flying = true; });

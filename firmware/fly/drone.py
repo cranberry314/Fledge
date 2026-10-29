@@ -212,7 +212,7 @@ def up(seconds=1):
 def down(seconds=1):
     """⬇️ Sink for `seconds`."""
     print(f"⬇️  Down for {seconds} s")
-    the_drone.move(seconds, up=-tuning.up_power)
+    the_drone.move(seconds, up=-tuning.down_power)
 
 
 def forward(seconds=1):

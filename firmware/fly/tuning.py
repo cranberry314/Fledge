@@ -1,8 +1,12 @@
 # ✈️ FLEDGE FLYING TUNING
 # Change a number, save, and fly again!
 
-# 🚀 how hard up and down push (0 to 100)
+# 🚀 how hard up pushes (0 to 100)
 up_power = 50
+
+# 🪂 how hard down pushes (0 to 100). The drone sinks slower than it
+#    climbs, so this is bigger: get it right and down(1) undoes up(1)
+down_power = 100
 
 # ➡️ how hard forward, back, left and right push (0 to 100)
 move_power = 50

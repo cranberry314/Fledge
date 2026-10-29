@@ -13,6 +13,7 @@ const SERVICE_ID = "6e1d0001-3c5a-4b8e-9f21-7a4d2c8b5e10";
 const CONTROLS_ID = "6e1d0002-3c5a-4b8e-9f21-7a4d2c8b5e10";
 const MESSAGE_VERSION = 2;
 const TAKE_OFF_OR_LAND = 1;
+const CALIBRATE = 3;
 const PAIR = 8;
 const LIGHTS_ON = 2; // the switches byte; slow speed, always
 const SEND_EVERY = 50; // milliseconds: 20 messages a second, like the phone
@@ -86,7 +87,10 @@ function flyStep(step) {
   if (!relayConnected()) return;
   const name = step.command.name;
 
-  if (name === "take_off" || name === "land") {
+  if (name === "calibrate") {
+    pushSticks({}, 0);
+    giveCommand(CALIBRATE);
+  } else if (name === "take_off" || name === "land") {
     pushSticks({}, 0);
     giveCommand(TAKE_OFF_OR_LAND);
   } else if (name === "forward") {

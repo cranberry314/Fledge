@@ -19,6 +19,7 @@
 
 // Every command, and what goes in its brackets.
 const COMMANDS = {
+  calibrate: "nothing",
   take_off: "nothing",
   land: "nothing",
   up: "seconds",

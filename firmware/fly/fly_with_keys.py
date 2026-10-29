@@ -42,7 +42,7 @@ def push_for(action):
     """The sticks one key press pushes, or None if `action` isn't a push."""
     pushes = {
         "up": {"up": tuning.up_power},
-        "down": {"up": -tuning.up_power},
+        "down": {"up": -tuning.down_power},
         "forward": {"forward": tuning.move_power},
         "back": {"forward": -tuning.move_power},
         "left": {"right": -tuning.move_power},

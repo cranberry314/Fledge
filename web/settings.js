@@ -28,6 +28,9 @@ const turnPower = 100;
 //    (get it right and rotate(180) is exactly half a turn)
 const turnSpeed = 90;
 
+// 📐 how many seconds calibrate() takes (the drone needs time to finish)
+const calibrateTime = 2;
+
 // 🛫 how many seconds taking off takes
 const takeOffTime = 2;
 
