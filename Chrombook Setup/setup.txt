@@ -1,0 +1,69 @@
+#!/bin/bash
+# Fledge: set up a Chromebook's Linux with VS Code and the ESP32 tools.
+#
+# First turn on Linux (see the PDF in this folder). Then, in the Terminal app,
+# download this file and run it with this one line:
+#
+#   curl -fsSL "https://raw.githubusercontent.com/cranberry314/Fledge/main/Chrombook%20Setup/setup.txt" -o setup.txt && bash setup.txt
+#
+# It is safe to run again: if the network drops, run  bash setup.txt  and it
+# carries on. It doesn't set up GitHub sign-in or Claude.
+set -e
+
+echo "== Checking this machine =="
+case "$(uname -m)" in
+    x86_64)  VS_CODE_BUILD=linux-deb-x64 ;;
+    aarch64) VS_CODE_BUILD=linux-deb-arm64 ;;
+    *) echo "This script needs an Intel, AMD or ARM Chromebook."; exit 1 ;;
+esac
+FREE_GB=$(( $(df --output=avail "$HOME" | tail -1) / 1024 / 1024 ))
+if [ "$FREE_GB" -lt 10 ]; then
+    echo "Linux has only $FREE_GB GB free, and this needs about 10 GB."
+    echo "Make the Linux disk bigger in Settings, then run this again."
+    exit 1
+fi
+
+echo "== Tools =="
+sudo apt-get update
+sudo apt-get install -y curl git python3
+
+echo "== VS Code =="
+if ! command -v code > /dev/null; then
+    # Yes to Microsoft's package list, so apt keeps VS Code up to date.
+    echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
+    curl -fL -o /tmp/code.deb "https://code.visualstudio.com/sha/download?build=stable&os=$VS_CODE_BUILD"
+    dpkg-deb --info /tmp/code.deb > /dev/null   # stops here if the download isn't a real package
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y /tmp/code.deb
+    rm /tmp/code.deb
+fi
+
+echo "== arduino-cli =="
+mkdir -p "$HOME/bin"
+export PATH="$HOME/bin:$PATH"
+if ! command -v arduino-cli > /dev/null; then
+    curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR="$HOME/bin" sh
+fi
+if ! grep -q 'HOME/bin' ~/.bashrc; then
+    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+fi
+
+echo "== ESP32 support and the radio library (the slow part) =="
+if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then
+    arduino-cli config init
+fi
+arduino-cli config set board_manager.additional_urls \
+    https://espressif.github.io/arduino-esp32/package_esp32_index.json
+arduino-cli core update-index
+arduino-cli core install esp32:esp32
+arduino-cli lib install RF24
+
+echo "== USB access to the ESP32 =="
+sudo usermod -aG dialout "$USER"
+
+echo "== Fledge repo =="
+if [ ! -d ~/Fledge ]; then
+    git clone https://github.com/cranberry314/Fledge.git ~/Fledge
+fi
+
+echo
+echo "All done. Close this terminal, open a new one, and type:  code ~/Fledge"
